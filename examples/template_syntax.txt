@@ -1,0 +1,75 @@
+#/
+    multi line comments example.
+
+
+   Overview:
+    - Strongly typed.
+
+    - All statements end with ";"
+    
+    - By default all values are immutable.
+    
+    - function declares require a type signature:
+    
+        * type sig = a list of args and their types followed
+	   by a "->" and then the return type.
+	   
+        * example: define sum_list([num_lst:Array[Int]] -> Int){ }
+
+     - single statements can be made in direct c by calling "raw_c" and
+        passing it a string of the needed C code.
+
+     - functions are invoked by ML/F# syntax:
+     
+         * <function_name> <values seperated by spaces>
+
+         * example: sumList [1,2,3,4,5] ;
+
+    - "mutable" is a wrapper which will decode values in mutable memory.
+
+    - Functions return mutable data types by default so they can be stored in
+       dynamic memory.
+
+
+/#
+
+let list_of_pins : array[int] = [1,2,3,4,5] ;  // stored in program mem (immutable)
+let  on : mutable int = 7 * 8 - 5 ;       // a dynamically stored variable (mutable)
+
+
+//still requires a setup fucntion: runs once
+def setup none -> none {
+    pinMode OUTPUT list_of_pins ;
+    raw_c "Serial.begin(9600)" ;
+}
+
+
+//still requires a loop function: runs repeatedly
+def loop none -> none {
+    while(on){
+        setPins ON list_of_pins;
+	delay 500 ;                         //in millis
+	setPins OFF list_of_pins;
+	delay 100 * 5 ;
+	turn_pattern 1 ON ;
+	delay 500 ;
+        5 + 7 * 9;
+    }
+}
+
+
+def turn_pattern pattern:int, mode:int -> none {
+    // Turns pins on/off from two different patterns.
+    
+    let pattern1 : array[int] = [1,2,3,5];
+    let pattern2 : array[int] = [3,6];
+    
+    if pattern == 1 {
+        setPins mode pattern1;
+    }
+    if pattern == 2  {
+        setPins mode pattern2;
+    }
+}
+
+    
