@@ -2,15 +2,18 @@
 
 ; main structure
 program: (let-statement | define-statement )+
-let-statement: let id colon [mutable-tag] type eq (lit | id | func-call| expr) [delimit]
-relet-statement: let id eq (lit | id | func-call | expr) [delimit]
-define-statement: def id signature scope-statement
-func-call: id (lit | id | func-call | expr)*
 
-statement: (let-statement | func-call | expr | relet-statement) delimit
+let-statement: let id colon [mutable-tag] type eq statement delimit
+relet-statement: id eq statement delimit
+
+define-statement: def id signature scope-statement
+
+
+func-call: id (lit | id | lparen expr rparen)*
+statement: expr
 
 ;code blocks
-scope-statement: lbrac (statement|while-loop|conditional)*
+scope-statement: lbrac (statement delimit| let-statement | relet-statement |while-loop|conditional)*
                  rbrac
 
 ; Typing statements
@@ -39,7 +42,7 @@ eq: EQUAL ;;; =
 
 ; Ops taken from http://math.purduecal.edu/~rlkraft/cs31600-2012/chapter03/syntax-examples.html
 
-expr: term [(add | sub) term]*
+expr: (func-call | term) [(add | sub) term]*
 term: factor [(mult | div) factor]*
 factor: (lparen expr rparen | id | lit)
 

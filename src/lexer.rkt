@@ -16,7 +16,7 @@ Racket 6.6 | 10/2/16 | License MIT
 (require parser-tools/lex)
 (require parser-tools/lex-sre)
 (require brag/support)
-(require "possible-grammar.rkt")
+(require "grammar.rkt")
 
 (define-lex-abbrev int? (+ (char-range #\0 #\9)))
 
