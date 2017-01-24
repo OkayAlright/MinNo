@@ -1,1 +1,0 @@
-("6.6" ("99c271a42066224d40042f1882f004214ada0945" . "2ffff301ae420702b37fe9f52442d7cf98ab6ddb") #"/Users/ldavis/Documents/minno/src/definitionHandler.rkt" #"/Users/ldavis/Documents/minno/src/lettypeHandler.rkt" (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
