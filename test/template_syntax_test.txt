@@ -1,10 +1,8 @@
 #/
     multi line comments example.
-
-
    Overview:
     - Strongly typed.
-
+    
     - All statements end with ";"
     
     - By default all values are immutable.
@@ -14,30 +12,30 @@
         * type sig = a list of args and their types followed
 	   by a "->" and then the return type.
 	   
-        * example: define sum_list([num_lst:Array[Int]] -> Int){ }
-
+        * example: define sum_list num_lst:array[int] -> int { }
+	
      - single statements can be made in direct c by calling "raw_c" and
         passing it a string of the needed C code.
-
      - functions are invoked by ML/F# syntax:
      
          * <function_name> <values seperated by spaces>
-
+	 
          * example: sumList [1,2,3,4,5] ;
-
-    - "mutable" is a wrapper which will decode values in mutable memory.
-
+	 
+    - "mutable" is a wrapper which will decode values in mutable
+      memory.
+      
     - Functions return mutable data types by default so they can be stored in
        dynamic memory.
-
-
 /#
 
 let list_of_pins : array[int] = [1,2,3,4,5] ;  // stored in program mem (immutable)
-let  on : mutable int = 7 * 8 - 5 ;       // a dynamically stored variable (mutable)
+let  on : mutable int = 7 * 8 - 5 ;       // a dynamically stored variable (mutable) 
+
+let a:int = addTwoNums 5 (addTwoNums 6 (7 + 7));
 
 
-def turn_pattern pattern:int, mode:int -> int {
+def turn_pattern pattern:int, mode:int -> none {
     // Turns pins on/off from two different patterns.
     
     let pattern1 : array[int] = [1,2,3,5];
