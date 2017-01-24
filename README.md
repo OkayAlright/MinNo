@@ -1,4 +1,4 @@
-= MinNo =
+# MinNo 
 
 MiNo is a MINimal NOise language for arduinos and AVR processors.
 The languages is currently under developement as part of a 
