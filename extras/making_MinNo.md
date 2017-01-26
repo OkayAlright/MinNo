@@ -18,9 +18,18 @@
 
 ## Targeting AVR Processors:
 #### Making Sure Things Stayed Fast
-#### Leting People Under The Hood: Why Translator Result Readability Matters
+#### Letting People Under The Hood: Why Translator Result Readability Matters
+
+# What is Left to Be Done:
+#### A Complete Standard Library
+#### Targeting Closer to the Chip
+#### Expanding Interoperability
+#### Creating an Ecosystem
 
 ## Opinions On The Ecosystem: Racket, Raco, and General House Keeping
 ##### Package Management
 ##### The Moment of Suspense: Dependency Updates
 ##### Feelings about Where the Language is Going
+
+
+## Bibliography:
