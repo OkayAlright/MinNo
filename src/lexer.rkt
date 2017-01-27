@@ -60,7 +60,14 @@ Racket 6.6 | 10/2/16 | License MIT
        [#\/         (list 'DIV-OP lexeme)]
        [#\-         (list 'SUB-OP lexeme)]
        [#\+         (list 'ADD-OP lexeme)]
-       ;;;[#\!         (token 'NEGATE lexeme)] <- soon to be considered
+       [#\!         (list 'NEGATE lexeme)]
+       [#\<         (list 'LESS-THAN lexeme)]
+       [#\>         (list 'GREATER-THAN lexeme)]
+       ["<="        (list 'LESS-OR-EQ lexeme)]
+       [">="        (list 'GREATER-OR-EQ lexeme)]
+       ["=="        (list 'EQUALITY lexeme)]
+       [(or "or" "||") (list 'OR lexeme)]
+       [(or "and" "&&") (list 'AND lexeme)]
        [#\{         (list 'LBRAC lexeme)]
        [#\}         (list 'RBRAC lexeme)]
        [#\(         (list 'LPAREN lexeme)]
@@ -97,7 +104,7 @@ Racket 6.6 | 10/2/16 | License MIT
                   (and (set! token-stream (append token-stream(list (tokenize file))))
                        (reader file)))))
 
-(define test (open-input-file "../test/template_syntax_test.txt")) ;;example file
+(define test (open-input-file "../examples/template_syntax.txt")) ;;example file
 
 (port-count-lines! test)  ;;enable line counting on port
 (printf "File Found.\nTokenizing...\n")
