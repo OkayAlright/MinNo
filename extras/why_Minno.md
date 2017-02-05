@@ -28,9 +28,9 @@ Most interest in processor architecture lies in standardized implementations (x8
 at this level typically is a discussion of instruction sets and bus implementation. AVR processors take it a step further 
 back and discuss the basic organization of a computer. X86 and ARM architectures are organized in a manner originally 
 specified by [John Von Neumann](http://www.c-jump.com/CIS77/CPU/VonNeumann/lecture.html): a central processing unit, memory, some form of input, some form of output, and long term 
-storage across a set of shared buses. AVR processors (generally) are organized in a manner consistent with [Havard specification](http://embeddedknowledge.blogspot.com/2010/02/processor-architectures-harvard-von.html) (more accurately, 
+storage across a set of shared buses. AVR processors (generally) are organized in a manner consistent with [Harvard specification](http://embeddedknowledge.blogspot.com/2010/02/processor-architectures-harvard-von.html) (more accurately, 
 the modified-Harvard spec). The main difference between Von Neumann and Harvard is that Harvard separates memory into 
-two different pools: instruction memory and data memory, which attach to the CPU via entirely seperate buses. 
+two different pools: instruction memory and data memory, which attach to the CPU via entirely separate buses. 
 Harvard processors can simultaneously read and write to both memory pools because they do not share a bus. The two pools 
 don't even need to be indexed and architectured the same. Often (as is the case with AVR processors), instruction memory is read/write 
 accessible at runtime, data memory isn't. Data memory is often used for long-term, initialization data: tables, addresses, 
@@ -40,7 +40,7 @@ AVR processors have general SRAM for data that needs to be accessed more quickly
 One of the problems with using C to program Harvard processors is that most C compiler implementations (and subsequently Arduino's 
 language) have grown under the ideas of Von Neumann architecture. All memory accessors and management systems, property 
 files, and object oriented idioms assume the computer they are running on has one shared pool of read/write memory. To 
-allow the benefits of Harvards memory architecture, we have to pollute the global name space with keywords to specifically 
+allow the benefits of Harvard's memory architecture, we have to pollute the global name space with keywords to specifically 
 access the data memory pool (such as declaration containing "const PROGMEM" is Arduino sketches).
 
 MinNo is an attempt to embedded Harvard's  distinction in architecture at the syntactic level. By default, all 
@@ -59,7 +59,7 @@ due to the lower power CPUs found on Arduinos and that MinNo is supposed to be a
 for now) to have no dynamically growing memory in MinNo: everything is statically allocated.
 
 This may initially seem like a huge drawback, and in general programming I would agree. But in embedded systems, dynamic 
-memory bugs can be sublte, incredibly hard to reproduce, and absolutely system crashing . Early in my 
+memory bugs can be subtle, incredibly hard to reproduce, and absolutely system crashing . Early in my 
 time programming sketches, I swore off the use of malloc and free in favor of static memory declarations. From 
 synthesizers, to controllers, to IR navigating robots, I have gotten away without using dynamic heap allocations. 
 To anyone reading this, for your sanity, I would suggest a similar shift in coding style. [Others also suggest minimizing dynamic 
@@ -70,10 +70,10 @@ memory restricted system.
 
 ## Template Operations vs. Stateful Procedures
 MinNo is meant to emphasize a more template based form of thinking about code; the code represents templates operating on 
-data. A hard seperation of data and code should be taken where it can. Intermediary values and indexing values are, of 
+data. A hard separation of data and code should be taken where it can. Intermediary values and indexing values are, of 
 course, held in read/write instruction memory, but these values can be thought of as markers and states in templates. 
 Indexes are markers as to what templates are being applied to. Intermediate values are states in between templates 
-operations. This mind set keep the seperation of memory pools more consistently present and should lead one to 
+operations. This mind set keep the separation of memory pools more consistently present and should lead one to 
 minimize stateful code as to avoid unnecessary complexity.
 
 ## Getting Under The Hood
