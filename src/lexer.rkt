@@ -15,7 +15,7 @@ Racket 6.6 | 10/2/16 | License MIT
 |#
 (require parser-tools/lex)
 (require parser-tools/lex-sre)
-(require brag/support)
+(require (prefix-in brag: brag/support))
 (require "grammar.rkt")
 
 (define-lex-abbrev int? (+ (char-range #\0 #\9)))
@@ -90,8 +90,8 @@ Racket 6.6 | 10/2/16 | License MIT
        [(eof) (set! end-of-file #t)]))
     (define result (find-token file))
   (cond [(equal? result (void)) (void)]  ;;;EOF
-        [(equal? (length result) 2) (token (first result) (second result) #:line line #:column column)]  ;;; TOKEN
-        [else (token (first result) #:skip? #t)]))) ;;; WHITESPACE or COMMENT
+        [(equal? (length result) 2) (brag:token (first result) (second result) #:line line #:column column)]  ;;; TOKEN
+        [else (brag:token (first result) #:skip? #t)]))) ;;; WHITESPACE or COMMENT
 
 (define token-stream '()) ; accumulator
 
