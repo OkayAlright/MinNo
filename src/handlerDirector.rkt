@@ -23,7 +23,12 @@
 
 (define statement-handler
   (lambda (datum)
-    (datum)))
+    datum))
+
+(define conditional-handler
+  (lambda (datum)
+    datum))
+    
 
 ; Takes some syntax->datum list of original AST and returns translated AST
 (define tree-transform
@@ -41,6 +46,8 @@
        (append (definition-tag-handler datum)
                (scope-statement-handler (fifth datum)))]
       ;;;----------------STATEMENT HANDLER-----------------------;;;
-      [(equal? tag 'statment) (statement-handler datum)])))
+      [(equal? tag 'statment) (statement-handler datum)]
+      ;;;----------------CONDITIONAL-HANDLER---------------------;;;
+      [(equal? tag 'conditional) (conditional-handler datum)])))
 
 (provide (all-defined-out))
