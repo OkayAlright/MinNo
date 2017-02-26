@@ -16,7 +16,9 @@ To Use:
 |#
 
 (require "handlerDirector.rkt")
+(provide (all-defined-out))
 
+#|
 (tree-transform '(program
   (let-statement
    (let "let")
@@ -142,4 +144,4 @@ To Use:
       (statement (expr (func-call (id "setPins") (id "mode") (id "pattern2"))))
       (delimit ";")
       (rbrac "}")))
-    (rbrac "}")))))
+    (rbrac "}"))))) |#

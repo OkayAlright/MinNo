@@ -17,6 +17,7 @@ Racket 6.6 | 10/2/16 | License MIT
 (require parser-tools/lex-sre)
 (require (prefix-in brag: brag/support))
 (require "grammar.rkt")
+(require "handlerDirector.rkt")
 
 (define-lex-abbrev int? (+ (char-range #\0 #\9)))
 
@@ -60,12 +61,6 @@ Racket 6.6 | 10/2/16 | License MIT
        [#\/         (list 'DIV-OP lexeme)]
        [#\-         (list 'SUB-OP lexeme)]
        [#\+         (list 'ADD-OP lexeme)]
-       [#\!         (list 'NEGATE lexeme)]
-       [#\<         (list 'LESS-THAN lexeme)]
-       [#\>         (list 'GREATER-THAN lexeme)]
-       ["<="        (list 'LESS-OR-EQ lexeme)]
-       [">="        (list 'GREATER-OR-EQ lexeme)]
-       ["=="        (list 'EQUALITY lexeme)]
        [(or "or" "||") (list 'OR lexeme)]
        [(or "and" "&&") (list 'AND lexeme)]
        [#\{         (list 'LBRAC lexeme)]
@@ -113,4 +108,8 @@ Racket 6.6 | 10/2/16 | License MIT
     (printf "File has been tokenized.\nParsing...\n")
     (printf "Error tokenizing file!\n"))
 
-(syntax->datum (parse token-stream)) ;; parse and return a datum
+(define t (syntax->datum (parse token-stream))) ;; parse and return a datum
+(define a (tree-transform t))
+t
+(display "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+a

@@ -16,6 +16,7 @@
   (lambda (datum)
     (let ([block '('scope-statement)])
       (for ([item (rest datum)])
+        (printf "working on ~a \n\n" item)
         (if (or (equal? (first item) 'lbrac) (equal? (first item) 'rbrac))
             (set! block (append block (list item)))
             (set! block (append block (list (tree-transform item))))))
@@ -28,6 +29,10 @@
 (define conditional-handler
   (lambda (datum)
     datum))
+
+(define delimited-statement-handler
+  (lambda (datum)
+    (append (second datum) (list (last datum)))))
     
 
 ; Takes some syntax->datum list of original AST and returns translated AST
@@ -47,6 +52,7 @@
                (scope-statement-handler (fifth datum)))]
       ;;;----------------STATEMENT HANDLER-----------------------;;;
       [(equal? tag 'statment) (statement-handler datum)]
+      [(equal? tag 'delimited-statement) (delimited-statement-handler datum)]
       ;;;----------------CONDITIONAL-HANDLER---------------------;;;
       [(equal? tag 'conditional) (conditional-handler datum)])))
 

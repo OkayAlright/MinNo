@@ -11,9 +11,10 @@ define-statement: def id signature scope-statement
 
 func-call: id (lit | id | lparen expr rparen)*
 statement: expr
+delimited-statement: statement delimit
 
 ;code blocks
-scope-statement: lbrac (statement delimit| let-statement | relet-statement |while-loop|conditional)*
+scope-statement: lbrac (delimited-statement| let-statement | relet-statement |while-loop|conditional)*
                  rbrac
 
 ; Typing statements

@@ -36,6 +36,8 @@
            (append (list 'lit) (list (fix-array-bracketing (second value-ast))))]
           [else value-ast])))
 
+
+#| ~~~~~ NO LONGER USED ~~~~~ |#
 ; Replaces all sqrBracs with curlyBracs in an array's AST
 (define fix-array-bracketing
   (lambda (array-ast)
