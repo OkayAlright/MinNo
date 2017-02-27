@@ -1,0 +1,23 @@
+#/
+blink.minno
+by Logan Davis
+
+    "A hopeless attempt to see if things are working."
+
+2/27/17 | Minno V"too early to tell" | devOS: macOS
+/#
+
+let outputPin : mutable int = 13; //set pin for reference
+
+def setup none -> none {
+    //set mode to output
+    pinMode OUTPUT outputPin;
+}
+
+def loop none -> none {
+    // blink on and off with 1 sec intervals
+    digitalWrite outputPin HIGH;
+    delay 1000;
+    digitalWrite outputPin LOW;
+    delay 1000;
+}

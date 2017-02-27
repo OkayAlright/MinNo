@@ -18,7 +18,6 @@
     (define needs-correcting '(lSqBrac
                                rSqBrac
                                func-call
-                               let-statement
                                delimit
                                lbrac
                                rbrac
@@ -31,7 +30,7 @@
               (let ([remaining-data (rest datum)]) ;;needs to be unpacked further
                 (for ([item remaining-data])
                   (set! output (string-append output (correcter item) " "))))))
-      (correct-over-tabbing (string-replace output "      " "")))))
+      (correct-over-tabbing (correct-over-spacing output)))))
   
 (define correction-handler
   (lambda (datum)
@@ -41,7 +40,19 @@
           [(equal? (first datum) 'lbrac) "{\n\t"]
           [(equal? (first datum) 'rbrac) "}\n"]
           [(equal? (first datum) 'args) (arg-corrector datum)]
+          [(equal? (first datum) 'func-call) (func-call-corrector datum)]
           [else "PLACEHOLDER"])))
+
+(define func-call-corrector
+  (lambda (func-call-datum)
+    (let ([func-call-string (string-append (second (second func-call-datum)) "(")]
+          [call-ast (rest (rest func-call-datum))])
+      (for ([item call-ast])
+        (cond [(equal? (first item) 'lparen) ""]
+              [(equal? (first item) 'rparen) ""]
+              [(set! func-call-string
+                     (string-append func-call-string (correcter item) ","))]))
+      (string-append func-call-string ")"))))
 
 (define arg-corrector
   (lambda (arg-datum)
@@ -53,11 +64,19 @@
             (if (equal? (first item) 'type)
                 (set! arg-string (string-append arg-string (second item) " "))
                 (set! arg-string (string-append arg-string (second item) ", "))))
-          (string-append "(" arg-string ")")))))
+          (correct-over-commaing (string-append "(" arg-string ")"))))))
+
+(define correct-over-commaing
+  (lambda (code-string)
+    (string-replace code-string ",)" ")")))
 
 (define correct-over-tabbing
   (lambda (sketch)
-    (string-replace sketch "\t  }" "}")))
+    (string-replace sketch "\t }" " }")))
+
+(define correct-over-spacing
+  (lambda (sketch)
+    (string-replace (string-replace sketch "      " "") "  " " ")))
               
 (define test
 '(program
