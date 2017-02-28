@@ -1,8 +1,23 @@
 #lang racket
+#|
+unpacker.rkt
+By Logan Davis
+
+DESCRIPTION:
+    Unpacks an Arduino-C AST from the MinNo
+    compiler's (tree-trasform) into a raw
+    string.
+
+TO USE:
+    call (unpack) on an Arduino-C AST.
+
+2/27/17 | Racket 6.8 | MacOS 10.11
+|#
+
+(define in-def #f) ;; a flag for if the unpacker is in a file definition
 
 
-(define in-def #f)
-
+; unpacks an Arduino-C AST into a string
 (define unpack
   (lambda (program-datum)
     (let ([program-structure (rest program-datum)]
@@ -13,6 +28,7 @@
         (if in-def (set! in-def #f) '())
       sketch)))
 
+; checks if a datum needs to be corrected or is ready to be unpacked.
 (define correcter
   (lambda (datum)
     (define needs-correcting '(lSqBrac
@@ -31,7 +47,8 @@
                 (for ([item remaining-data])
                   (set! output (string-append output (correcter item) " "))))))
       (correct-over-tabbing (correct-over-spacing output)))))
-  
+
+; Either returns a corrected string or passes off the datum to a handler
 (define correction-handler
   (lambda (datum)
     (cond [(equal? (first datum) 'delimit) ";\n\t"]
@@ -43,6 +60,7 @@
           [(equal? (first datum) 'func-call) (func-call-corrector datum)]
           [else "PLACEHOLDER"])))
 
+; adds parens and commas to a func-call datum and unpacks
 (define func-call-corrector
   (lambda (func-call-datum)
     (let ([func-call-string (string-append (second (second func-call-datum)) "(")]
@@ -52,8 +70,9 @@
               [(equal? (first item) 'rparen) ""]
               [(set! func-call-string
                      (string-append func-call-string (correcter item) ","))]))
-      (string-append func-call-string ")"))))
+      (correct-over-commaing (string-append func-call-string ")")))))
 
+; adds parens and commas to a definition's sub-datum "args" and unpacks
 (define arg-corrector
   (lambda (arg-datum)
     (if (equal? arg-datum '(args (nonetype "none") (nonetype "none")))
@@ -64,7 +83,7 @@
             (if (equal? (first item) 'type)
                 (set! arg-string (string-append arg-string (second item) " "))
                 (set! arg-string (string-append arg-string (second item) ", "))))
-          (correct-over-commaing (string-append "(" arg-string ")"))))))
+          (string-append "(" arg-string ")")))))
 
 (define correct-over-commaing
   (lambda (code-string)
@@ -78,122 +97,4 @@
   (lambda (sketch)
     (string-replace (string-replace sketch "      " "") "  " " ")))
               
-(define test
-'(program
-  (declaration
-   (type "const PROGMEM int[]")
-   (id "list_of_pins")
-   (eq "=")
-   (statement
-    (expr
-     (term
-      (factor
-       (lit
-        (array
-         (lSqBrac "[")
-         (lit (int "1"))
-         (comma ",")
-         (lit (int "2"))
-         (comma ",")
-         (lit (int "3"))
-         (comma ",")
-         (lit (int "4"))
-         (comma ",")
-         (lit (int "5"))
-         (rSqBrac "]")))))))
-   (delimit ";"))
-  (declaration
-   (type "int")
-   (id "on")
-   (eq "=")
-   (statement
-    (expr
-     (term (factor (lit (int "7"))) (mult "*") (factor (lit (int "8"))))
-     (sub "-")
-     (term (factor (lit (int "5"))))))
-   (delimit ";"))
-  (definition
-   (void-type "void")
-   (id "setup")
-   (args (nonetype "none") (nonetype "none"))
-   ('scope-statement
-    (lbrac "{")
-    (statement (expr (func-call (id "pinMode") (id "OUTPUT") (id "list_of_pins"))) (delimit ";"))
-    (statement (expr (func-call (id "raw_c") (lit (string "\"Serial.begin(9600)\"")))) (delimit ";"))
-    (rbrac "}")))
-  (definition
-   (void-type "void")
-   (id "loop")
-   (args (nonetype "none") (nonetype "none"))
-   ('scope-statement (lbrac "{")
-                     (statement
-     (expr
-      (func-call
-       (id "addTwo")
-       (lit (int "5"))
-       (lparen "(")
-       (expr
-        (func-call
-         (id "addTwo")
-         (lit (int "6"))
-         (lparen "(")
-         (expr (term (factor (lit (int "8")))) (sub "-") (term (factor (lit (int "9")))))
-         (rparen ")")))
-       (rparen ")")))
-     (delimit ";"))
-
-                     (rbrac "}")))
-  (definition
-   (void-type "void")
-   (id "turn_pattern")
-   (args (type "int") (id "pattern") (type "int") (id "mode"))
-   ('scope-statement
-    (lbrac "{")
-    (declaration
-     (type "const PROGMEM int[]")
-     (id "pattern1")
-     (eq "=")
-     (statement
-      (expr
-       (term
-        (factor
-         (lit
-          (array
-           (lSqBrac "[")
-           (lit (int "1"))
-           (comma ",")
-           (lit (int "2"))
-           (comma ",")
-           (lit (int "3"))
-           (comma ",")
-           (lit (int "5"))
-           (rSqBrac "]")))))))
-     (delimit ";"))
-    (declaration
-     (type "const PROGMEM int[]")
-     (id "pattern2")
-     (eq "=")
-     (statement
-      (expr
-       (term
-        (factor
-         (lit (array (lSqBrac "[") (lit (int "3")) (comma ",") (lit (int "6")) (rSqBrac "]")))))))
-     (delimit ";"))
-    (statement
-     (expr
-      (func-call
-       (id "addTwo")
-       (lit (int "5"))
-       (lparen "(")
-       (expr
-        (func-call
-         (id "addTwo")
-         (lit (int "6"))
-         (lparen "(")
-         (expr (term (factor (lit (int "8")))) (sub "-") (term (factor (lit (int "9")))))
-         (rparen ")")))
-       (rparen ")")))
-     (delimit ";"))
-    (rbrac "}")))))
-
-(unpack test)
+(provide (all-defined-out))

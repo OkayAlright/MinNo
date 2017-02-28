@@ -16,8 +16,6 @@ Racket 6.6 | 10/2/16 | License MIT
 (require parser-tools/lex)
 (require parser-tools/lex-sre)
 (require (prefix-in brag: brag/support))
-(require "grammar.rkt")
-(require "handlerDirector.rkt")
 
 (define-lex-abbrev int? (+ (char-range #\0 #\9)))
 
@@ -88,28 +86,4 @@ Racket 6.6 | 10/2/16 | License MIT
         [(equal? (length result) 2) (brag:token (first result) (second result) #:line line #:column column)]  ;;; TOKEN
         [else (brag:token (first result) #:skip? #t)]))) ;;; WHITESPACE or COMMENT
 
-(define token-stream '()) ; accumulator
-
-
-;recursively lexs a file-port accumulating tokens in token-stream.
-(define reader
-    (lambda (file)
-      (if end-of-file
-                  '()
-                  (and (set! token-stream (append token-stream(list (tokenize file))))
-                       (reader file)))))
-
-(define test (open-input-file "../examples/template_syntax.txt")) ;;example file
-
-(port-count-lines! test)  ;;enable line counting on port
-(printf "File Found.\nTokenizing...\n")
-
-(if (equal? (reader test) '())   ;If no mal-formed return was produced, print success
-    (printf "File has been tokenized.\nParsing...\n")
-    (printf "Error tokenizing file!\n"))
-
-(define t (syntax->datum (parse token-stream))) ;; parse and return a datum
-(define a (tree-transform t))
-t
-(display "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-a
+(provide (all-defined-out))
