@@ -7,11 +7,11 @@ by Logan Davis
 2/27/17 | Minno V"too early to tell" | devOS: macOS
 /#
 
-let outputPin : mutable int = 13; //set pin for reference
+let outputPin : int = 13; //set pin for reference
 
 def setup none -> none {
     //set mode to output
-    pinMode OUTPUT outputPin;
+    pinMode outputPin OUTPUT;
 }
 
 def loop none -> none {
@@ -20,4 +20,5 @@ def loop none -> none {
     delay 1000;
     digitalWrite outputPin LOW;
     delay 1000;
+    digitalWrite outputPin LOW;
 }

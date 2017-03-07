@@ -1,10 +1,16 @@
 #lang racket
 
+
+(define prog-mem-variables '())
+
 ; Handles a 'let-statement branch of an AST
 (define let-tag-handler
   ;;; add section for mutable lets
   (lambda (datum)
     (let ([mutable? (mutable-tag? datum)])
+         (if mutable?
+             '()
+             (set! prog-mem-variables (append prog-mem-variables (list (third datum)))))
          (if mutable?
              (append (list 'declaration)
                      (list (list 'type (letType-handler (sixth datum)))) ;;type

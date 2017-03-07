@@ -24,6 +24,7 @@ TO USE:
 (define token-stream '()) ; accumulator
 
 
+
 ;recursively lexs a file-port accumulating tokens in token-stream.
 (define reader
     (lambda (file)
@@ -32,7 +33,7 @@ TO USE:
                   (and (set! token-stream (append token-stream(list (tokenize file))))
                        (reader file)))))
 
-(define source-code (open-input-file "../examples/test.minno")) ;;example file
+(define source-code (open-input-file "../examples/potReader.minno")) ;;example file
 
 (port-count-lines! source-code)  ;;enable line counting on port
 (printf "File Found.\nTokenizing...\n")
@@ -45,9 +46,11 @@ TO USE:
                 (tree-transform
                  (syntax->datum (parse token-stream))))) ;; parse and return a datum
 
+
+
 (printf "\nResult:\n-------\n~a" output-string)
 
-(with-output-to-file "../examples/blink.c" #:exists 'replace
+(with-output-to-file "../examples/potReader.c" #:exists 'replace
   (lambda ()
     (printf "~a" output-string)))
 

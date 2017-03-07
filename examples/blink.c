@@ -1,13 +1,14 @@
- int outputPin = 13 ;
+ const PROGMEM int outputPin = 13 ;
 	 
  void setup () {
-	 pinMode(OUTPUT,outputPin) ;
+	 pinMode(pgm_read_word(&outputPin),OUTPUT) ;
  }
  
  void loop () {
-	 digitalWrite(outputPin,HIGH) ;
+	 digitalWrite(pgm_read_word(&outputPin),HIGH) ;
 	 delay(1000 ) ;
-	 digitalWrite(outputPin,LOW) ;
+	 digitalWrite(pgm_read_word(&outputPin),LOW) ;
 	 delay(1000 ) ;
+	 digitalWrite(pgm_read_word(&outputPin),LOW) ;
  }
  

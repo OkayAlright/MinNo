@@ -1,0 +1,16 @@
+
+
+let sensorPin: int = 0;
+let ledPin: int = 13;
+
+def setup none -> none {
+    pinMode ledPin OUTPUT;
+}
+
+def loop none -> none {
+    let sensorVal : mutable int = analogRead sensorPin;
+    digitalWrite ledPin HIGH;
+    delay sensorVal;
+    digitalWrite ledPin LOW;
+    delay sensorVal;
+}

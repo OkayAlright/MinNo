@@ -13,8 +13,12 @@ TO USE:
 
 2/27/17 | Racket 6.8 | MacOS 10.11
 |#
+(require "lettypeHandler.rkt")
+(require "handlerDirector.rkt")
 
-(define in-def #f) ;; a flag for if the unpacker is in a file definition
+
+(define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
+(define in-func-call #f) ;; a flag to properly wrap prog-mem variables
 
 
 ; unpacks an Arduino-C AST into a string
@@ -23,9 +27,9 @@ TO USE:
     (let ([program-structure (rest program-datum)]
           [sketch ""])
       (for ([item program-structure])
-        (if (equal? (first item) 'definition) (set! in-def #t) '())
+        (if (equal? (first item) 'definition) (set! in-def-unpacking #t) '())
         (set! sketch (string-append sketch " " (correcter item) "\n")))
-        (if in-def (set! in-def #f) '())
+        (if in-def-unpacking (set! in-def-unpacking #f) '())
       sketch)))
 
 ; checks if a datum needs to be corrected or is ready to be unpacked.
@@ -37,7 +41,8 @@ TO USE:
                                delimit
                                lbrac
                                rbrac
-                               args))
+                               args
+                               id))
     (let ([output ""])
       (if (member (first datum) needs-correcting)
           (set! output (string-append output (correction-handler datum))) ;;minor formatting changes need to be done
@@ -58,18 +63,28 @@ TO USE:
           [(equal? (first datum) 'rbrac) "}\n"]
           [(equal? (first datum) 'args) (arg-corrector datum)]
           [(equal? (first datum) 'func-call) (func-call-corrector datum)]
+          [(equal? (first datum) 'id) (correct-if-immutable datum)]
           [else "PLACEHOLDER"])))
+
+(define correct-if-immutable
+  (lambda (datum)
+    (if (and (member datum prog-mem-variables) in-func-call)
+        (string-append "pgm_read_word(&" (second datum) ")")
+        (second datum))))
 
 ; adds parens and commas to a func-call datum and unpacks
 (define func-call-corrector
   (lambda (func-call-datum)
+    (set! in-func-call #t) ;; start in context
     (let ([func-call-string (string-append (second (second func-call-datum)) "(")]
           [call-ast (rest (rest func-call-datum))])
-      (for ([item call-ast])
+      (for ([item call-ast]) 
+        (set! in-func-call #t) ;; correct context for nested func calls
         (cond [(equal? (first item) 'lparen) ""]
               [(equal? (first item) 'rparen) ""]
               [(set! func-call-string
                      (string-append func-call-string (correcter item) ","))]))
+      (set! in-func-call #f)
       (correct-over-commaing (string-append func-call-string ")")))))
 
 ; adds parens and commas to a definition's sub-datum "args" and unpacks
