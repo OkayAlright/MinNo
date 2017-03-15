@@ -1,4 +1,5 @@
 #lang racket
+(require "state-roster.rkt")
 
 (define definition-tag-handler
   (lambda (datum)
@@ -32,7 +33,9 @@
                  (equal? (first item) 'arrow))
              (and (set! full-arg-list (append full-arg-list (list arg-accumulator)))
                   (set! arg-accumulator '()))]
-            [else (set! arg-accumulator (append arg-accumulator (list item)))]))
+            [else
+             (and (set! arg-accumulator (append arg-accumulator (list item)))
+                  (if (equal? (first item) 'id) (add-variables-defined (second item)) '()))]))
     full-arg-list))
 
 (provide (all-defined-out))

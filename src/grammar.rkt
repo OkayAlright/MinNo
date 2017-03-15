@@ -13,8 +13,10 @@ func-call: id (lit | id | lparen expr rparen)*
 statement: expr
 delimited-statement: statement delimit
 
+return-statement: return delimited-statement
+
 ;code blocks
-scope-statement: lbrac (delimited-statement| let-statement | relet-statement |while-loop|conditional)*
+scope-statement: lbrac (delimited-statement| let-statement | relet-statement |while-loop|conditional|return-statement)*
                  rbrac
 
 ; Typing statements
@@ -22,10 +24,10 @@ type: TYPE | ARRAY-TYPE lSqBrac TYPE rSqBrac ;;; "int" | "array[int]"
 signature: (((id colon type comma)* id colon type) | nonetype) arrow (type | nonetype)
 
 ; control-flow
-while-loop: while lparen (comparison | id) rparen scope-statement            
+while-loop: while (comparison | statement) scope-statement            
 conditional: if comparison scope-statement
              [else scope-statement]
-comparison: (statement| lit| id) bool-comp (statement|lit|id) ;;; "x == y"
+comparison: statement bool-comp statement ;;; "x == y"
 
 
 ; Seperating characters
@@ -39,7 +41,7 @@ comma: COMMA    ;;; ,
 colon: COLON    ;;; :
 delimit: SEMI-COLON ;;; ;
 eq: EQUAL ;;; =
-
+return: RETURN
 
 ; Ops taken from http://math.purduecal.edu/~rlkraft/cs31600-2012/chapter03/syntax-examples.html
 

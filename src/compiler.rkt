@@ -33,7 +33,7 @@ TO USE:
                   (and (set! token-stream (append token-stream(list (tokenize file))))
                        (reader file)))))
 
-(define source-code (open-input-file "../examples/potReader.minno")) ;;example file
+(define source-code (open-input-file "../examples/testComplex.minno")) ;;example file
 
 (port-count-lines! source-code)  ;;enable line counting on port
 (printf "File Found.\nTokenizing...\n")
@@ -42,15 +42,17 @@ TO USE:
     (printf "File has been tokenized.\nParsing...\n")
     (printf "Error tokenizing file!\n"))
 
+(define a (tree-transform
+                 (syntax->datum (parse token-stream))))
+
 (define output-string (unpack
-                (tree-transform
-                 (syntax->datum (parse token-stream))))) ;; parse and return a datum
+                a)) ;; parse and return a datum
 
 
 
 (printf "\nResult:\n-------\n~a" output-string)
 
-(with-output-to-file "../examples/potReader.c" #:exists 'replace
+(with-output-to-file "../examples/testcomplex.c" #:exists 'replace
   (lambda ()
     (printf "~a" output-string)))
 

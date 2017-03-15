@@ -55,6 +55,7 @@ Racket 6.6 | 10/2/16 | License MIT
        ["none"      (list 'NONE-TYPE lexeme)]
        ["mutable"   (list 'MUT-TAG lexeme)]
        ["array"     (list 'ARRAY-TYPE lexeme)]
+       ["return"    (list 'RETURN lexeme)]
        [#\*         (list 'MULT-OP lexeme)]
        [#\/         (list 'DIV-OP lexeme)]
        [#\-         (list 'SUB-OP lexeme)]

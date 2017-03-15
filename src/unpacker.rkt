@@ -13,8 +13,7 @@ TO USE:
 
 2/27/17 | Racket 6.8 | MacOS 10.11
 |#
-(require "lettypeHandler.rkt")
-(require "handlerDirector.rkt")
+(require "state-roster.rkt")
 
 
 (define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
@@ -62,15 +61,24 @@ TO USE:
           [(equal? (first datum) 'lbrac) "{\n\t"]
           [(equal? (first datum) 'rbrac) "}\n"]
           [(equal? (first datum) 'args) (arg-corrector datum)]
-          [(equal? (first datum) 'func-call) (func-call-corrector datum)]
-          [(equal? (first datum) 'id) (correct-if-immutable datum)]
+          [(equal? (first datum) 'func-call) (func-call-or-id datum)]
+          [(equal? (first datum) 'id) (correct-if-immutable-or-array datum)]
           [else "PLACEHOLDER"])))
 
-(define correct-if-immutable
+(define correct-if-immutable-or-array
   (lambda (datum)
-    (if (and (member datum prog-mem-variables) in-func-call)
-        (string-append "pgm_read_word(&" (second datum) ")")
-        (second datum))))
+    (if (member (second datum) arrays-defined)
+        (string-append (second datum) "[]")
+        (if (and (member datum prog-mem-variables) in-func-call)
+            (string-append "pgm_read_word(&" (second datum) ")")
+            (second datum)))))
+
+; check if it is not just a variable
+(define func-call-or-id
+  (lambda (datum)
+    (if (member (second (second datum)) variables-defined)
+        (second (second datum))
+        (func-call-corrector datum))))
 
 ; adds parens and commas to a func-call datum and unpacks
 (define func-call-corrector
@@ -98,11 +106,11 @@ TO USE:
             (if (equal? (first item) 'type)
                 (set! arg-string (string-append arg-string (second item) " "))
                 (set! arg-string (string-append arg-string (second item) ", "))))
-          (string-append "(" arg-string ")")))))
+          (correct-over-commaing (string-append "(" arg-string ")"))))))
 
 (define correct-over-commaing
   (lambda (code-string)
-    (string-replace code-string ",)" ")")))
+    (string-replace (string-replace code-string ",)" ")") ", )" ")")))
 
 (define correct-over-tabbing
   (lambda (sketch)

@@ -18,7 +18,6 @@ To Use:
 (require "definitionHandler.rkt")
 (require "lettypeHandler.rkt")
 
-(define in-def-flag #f)
 
 ; Handles a 'program branch of an AST
 (define program-tag-handler
@@ -54,12 +53,7 @@ To Use:
   (lambda (datum)
     (append (second datum) (list (last datum)))))
 
-(define scope-handler-from-def
- (lambda (datum)
-   (set! in-def-flag #t)
-   (define statement-content (scope-statement-handler (fifth datum)))
-   (set! in-def-flag #f)
-    statement-content))
+
 
 ; Takes some syntax->datum list of original AST and returns translated AST
 (define tree-transform
@@ -75,11 +69,16 @@ To Use:
       ;;;----------------DEFINE STATEMENT------------------------;;;
       [(equal? tag 'define-statement)
        (append (definition-tag-handler datum)
-               (scope-handler-from-def datum))]
+               (scope-statement-handler (fifth datum)))]
       ;;;----------------STATEMENT HANDLER-----------------------;;;
       [(equal? tag 'statment) (statement-handler datum)]
       [(equal? tag 'delimited-statement) (delimited-statement-handler datum)]
       ;;;----------------CONDITIONAL-HANDLER---------------------;;;
-      [(equal? tag 'conditional) (conditional-handler datum)])))
+      [(equal? tag 'conditional) (conditional-handler datum)]
+      ;;;----------------RETURN-HANDLER--------------------------;;;
+      [(equal? tag 'return-statement) datum]
+      ;;;----------------LOOP-HANDLER----------------------------;;;
+      [(equal? tag 'while-loop) datum])))
+
 
 (provide (all-defined-out))
