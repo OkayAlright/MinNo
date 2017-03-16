@@ -42,11 +42,14 @@ TO USE:
     (printf "File has been tokenized.\nParsing...\n")
     (printf "Error tokenizing file!\n"))
 
-(define a (tree-transform
-                 (syntax->datum (parse token-stream))))
+(define t (syntax->datum (parse token-stream)))
 
-(define output-string (unpack
-                a)) ;; parse and return a datum
+(printf "\nResult:\n-------\n~a" t)
+
+(define a (tree-transform t))
+(printf "\nResult:\n-------\n~a" a)
+
+(define output-string (unpack a)) ;; parse and return a datum
 
 
 

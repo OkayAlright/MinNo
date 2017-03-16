@@ -41,7 +41,9 @@ TO USE:
                                lbrac
                                rbrac
                                args
-                               id))
+                               id
+                               while-loop
+                               conditional))
     (let ([output ""])
       (if (member (first datum) needs-correcting)
           (set! output (string-append output (correction-handler datum))) ;;minor formatting changes need to be done
@@ -63,21 +65,41 @@ TO USE:
           [(equal? (first datum) 'args) (arg-corrector datum)]
           [(equal? (first datum) 'func-call) (func-call-or-id datum)]
           [(equal? (first datum) 'id) (correct-if-immutable-or-array datum)]
+          [(equal? (first datum) 'while-loop) (while-loop-corrector datum)]
+          [(equal? (first datum) 'conditional) (conditional-corrector datum)]
           [else "PLACEHOLDER"])))
+
+(define while-loop-corrector
+  (lambda (datum)
+    (string-append "while(" (correcter (third datum)) ")" (correcter (fourth datum)))))
+
+(define conditional-corrector
+  (lambda (datum)
+    (string-append "if(" (correcter (third datum)) ")"
+                   (correcter (fourth datum))
+                   (if (member '(else "else") datum)
+                       (string-append "else" (correcter (sixth datum)))
+                       ""))))
+
+
 
 (define correct-if-immutable-or-array
   (lambda (datum)
-    (if (member (second datum) arrays-defined)
-        (string-append (second datum) "[]")
-        (if (and (member datum prog-mem-variables) in-func-call)
-            (string-append "pgm_read_word(&" (second datum) ")")
-            (second datum)))))
+    (printf "~a \n\n ~a\n" prog-mem-variables datum)
+    (let ([result (second datum)])
+      (if (member (second datum) arrays-defined)
+          (set! result (string-append result "[]"))
+                '())
+      (if (and (member datum prog-mem-variables) in-func-call)
+          (set! result (string-append "pgm_read_word(&" result ")"))
+          '())
+      result)))
 
 ; check if it is not just a variable
 (define func-call-or-id
   (lambda (datum)
     (if (member (second (second datum)) variables-defined)
-        (second (second datum))
+        (correct-if-immutable-or-array (second datum))
         (func-call-corrector datum))))
 
 ; adds parens and commas to a func-call datum and unpacks

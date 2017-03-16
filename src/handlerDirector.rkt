@@ -61,15 +61,13 @@ To Use:
     (define tag (first datum))
     (cond
       ;;;----------------TOP LEVEL PROGRAM-----------------------;;;
-      [(equal? tag 'program)
-       (program-tag-handler datum)]
+      [(equal? tag 'program) (program-tag-handler datum)]
       ;;;----------------LET STATEMENT---------------------------;;;
-      [(equal? tag 'let-statement)
-       (let-tag-handler datum)]
+      [(equal? tag 'let-statement) (let-tag-handler datum)]
+      [(equal? tag 'relet-statement) datum]
       ;;;----------------DEFINE STATEMENT------------------------;;;
       [(equal? tag 'define-statement)
-       (append (definition-tag-handler datum)
-               (scope-statement-handler (fifth datum)))]
+       (append (definition-tag-handler datum) (scope-statement-handler (fifth datum)))]
       ;;;----------------STATEMENT HANDLER-----------------------;;;
       [(equal? tag 'statment) (statement-handler datum)]
       [(equal? tag 'delimited-statement) (delimited-statement-handler datum)]
