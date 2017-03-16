@@ -29,7 +29,7 @@ Racket 6.6 | 10/2/16 | License MIT
                                   (* (or alphabetic #\_ #\! #\? (char-range #\0 #\9)))))
 
 (define-lex-abbrev bool-comp? (or "==" "&&" "||" "<" ">" ">=" "<=" "!="))
-(define-lex-abbrev type? (or "int" "string" "float"))
+(define-lex-abbrev type? (or "int" "char" "float"))
 
 (define-lex-abbrev comment? (or (: "//" (* (char-complement #\newline)))
                                 (: "#/" (complement (: any-string "/#" any-string)) "/#")))
@@ -74,6 +74,7 @@ Racket 6.6 | 10/2/16 | License MIT
        [bool-comp?  (list 'BOOL-COMP lexeme)]
        [#\=         (list 'EQUAL lexeme)]
        ["while"     (list 'WHILE lexeme)]
+       ["for"       (list 'FOR lexeme)]
        ["if"        (list 'IF lexeme)]
        ["else"      (list 'ELSE lexeme)]
        ["->"        (list 'ARROW lexeme)]

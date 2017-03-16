@@ -9,11 +9,11 @@
           [ast-result '()])
          (add-variables-defined (second (third datum))) ;;catalog it as variable
          (define is-array #f)
-         (if mutable?                          ;; if immutaable, catalog it
+         (if mutable?                          ;; if immutable, catalog it
              
              (and (set! is-array (equal? (second (sixth datum)) "array"))
                   (set! ast-result (append (list 'declaration)
-                                           (list (list 'type (letType-handler (sixth datum)))) ;;type
+                                           (list (list 'type (letType-handler-get-type (sixth datum)))) ;;type
                                            (list (correct-id-if-array (third datum) is-array))  ;; id
                                            (list (seventh datum))  ;; equal symbol
                                            (list (eighth datum)) ;;value
@@ -22,7 +22,7 @@
                   (set! ast-result (append (list 'declaration)
                                            (list (list 'type (string-append
                                                               "const PROGMEM "
-                                                              (letType-handler (fifth datum))))) ;;type
+                                                              (letType-handler-get-type (fifth datum))))) ;;type
                                            (list (correct-id-if-array (third datum) is-array))  ;; id
                                            (list (sixth datum))  ;; equal symbol
                                            (list (seventh datum)) ;;value
@@ -39,7 +39,7 @@
 
 
 ; Translates types from original-AST to target AST.
-(define letType-handler
+(define letType-handler-get-type
   ;;; TODO: add multi-dimensional array type handling.
   (lambda (datum)
     (cond [(equal? (second datum) "array") (fourth datum)]

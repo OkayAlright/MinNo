@@ -53,6 +53,18 @@ To Use:
   (lambda (datum)
     (append (second datum) (list (last datum)))))
 
+(define for-loop-handler
+  (lambda (datum)
+    (printf "yup \t ~a\n\n" (seventh datum))
+    (list (first datum)
+          (second datum)
+          (tree-transform (third datum))
+          (fourth datum)
+          (fifth datum)
+          (tree-transform (sixth datum))
+          (first (tree-transform (seventh datum))))))
+          
+
 
 
 ; Takes some syntax->datum list of original AST and returns translated AST
@@ -71,12 +83,14 @@ To Use:
       ;;;----------------STATEMENT HANDLER-----------------------;;;
       [(equal? tag 'statment) (statement-handler datum)]
       [(equal? tag 'delimited-statement) (delimited-statement-handler datum)]
+      [(equal? tag 'scope-statement) (scope-statement-handler datum)]
       ;;;----------------CONDITIONAL-HANDLER---------------------;;;
       [(equal? tag 'conditional) (conditional-handler datum)]
       ;;;----------------RETURN-HANDLER--------------------------;;;
       [(equal? tag 'return-statement) datum]
       ;;;----------------LOOP-HANDLER----------------------------;;;
-      [(equal? tag 'while-loop) datum])))
+      [(equal? tag 'while-loop) datum]
+      [(equal? tag 'for-loop) (for-loop-handler datum)])))
 
 
 (provide (all-defined-out))

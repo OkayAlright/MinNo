@@ -16,7 +16,8 @@ delimited-statement: statement delimit
 return-statement: return delimited-statement
 
 ;code blocks
-scope-statement: lbrac (delimited-statement| let-statement | relet-statement |while-loop|conditional|return-statement)*
+scope-statement: lbrac (delimited-statement| let-statement | relet-statement |
+                        while-loop| for-loop | conditional|return-statement)*
                  rbrac
 
 ; Typing statements
@@ -24,7 +25,10 @@ type: TYPE | ARRAY-TYPE lSqBrac TYPE rSqBrac ;;; "int" | "array[int]"
 signature: (((id colon type comma)* id colon type) | nonetype) arrow (type | nonetype)
 
 ; control-flow
-while-loop: while (comparison | statement) scope-statement            
+while-loop: while (comparison | statement) scope-statement
+for-loop: for (let-statement | relet-statement)
+              comparison delimit
+              relet-statement scope-statement
 conditional: if comparison scope-statement
              [else scope-statement]
 comparison: statement bool-comp statement ;;; "x == y"
@@ -63,6 +67,7 @@ nonetype: NONE-TYPE
 mutable-tag: MUT-TAG
 string: STRING
 while: WHILE           ;;; "while"
+for: FOR
 if: IF                 ;;; "if"
 else: ELSE             ;;; "else"
 bool-comp: BOOL-COMP   ;;; "==" | ">" ... ect

@@ -43,7 +43,8 @@ TO USE:
                                args
                                id
                                while-loop
-                               conditional))
+                               conditional
+                               for-loop))
     (let ([output ""])
       (if (member (first datum) needs-correcting)
           (set! output (string-append output (correction-handler datum))) ;;minor formatting changes need to be done
@@ -66,12 +67,25 @@ TO USE:
           [(equal? (first datum) 'func-call) (func-call-or-id datum)]
           [(equal? (first datum) 'id) (correct-if-immutable-or-array datum)]
           [(equal? (first datum) 'while-loop) (while-loop-corrector datum)]
+          [(equal? (first datum) 'for-loop) (for-loop-corrector datum)]
           [(equal? (first datum) 'conditional) (conditional-corrector datum)]
           [else "PLACEHOLDER"])))
+
+
 
 (define while-loop-corrector
   (lambda (datum)
     (string-append "while(" (correcter (third datum)) ")" (correcter (fourth datum)))))
+
+(define for-loop-corrector
+  (lambda (datum)
+    (string-append (make-one-line (string-append "for("
+                                                 (correcter (third datum))
+                                                 (correcter (fourth datum))
+                                                 (correcter (fifth datum))
+                                                 (remove-delimit (correcter (sixth datum)))
+                                                 ")"))
+                                                 (correcter (seventh datum)))))
 
 (define conditional-corrector
   (lambda (datum)
@@ -141,5 +155,13 @@ TO USE:
 (define correct-over-spacing
   (lambda (sketch)
     (string-replace (string-replace sketch "      " "") "  " " ")))
+
+(define remove-delimit
+  (lambda (delimited-string)
+    (string-replace delimited-string ";\n\t" "")))
+
+(define make-one-line
+  (lambda (multi-line-string)
+    (string-replace multi-line-string ";\n\t" ";")))
               
 (provide (all-defined-out))

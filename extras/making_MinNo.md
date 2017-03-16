@@ -174,19 +174,19 @@ takes some loose form from languages I have used and enjoyed in the past.
 The grammar produces a syntax object which is handled by the translator.
 
 ## The Translator: A Handler Model
-Like syntax pattern matching, Racket's syntax objects are highly specific to 
+Like syntax rules [LINK], Racket's syntax objects are highly specific to 
 the crowd that is doing cutting edge language research using the platform. To
-maintain my sanity, I decided to roll my own template method instead. Given
+maintain my sanity, I decided to roll my own template-based method instead. Given
 MinNo's rather strict syntax, predicting the grammar that can be used at any 
 point is a programs AST is fairly straight forward. 
 
 #### Avoiding BNF Hell
-A a word of warning, this is that area where you start to understand terrible 
+A word of warning, this is that area where you start to understand terrible 
 mistakes you made in constructing your grammar or defining your lexer. Those 
-steps can be made to consume and use some pretty kludgy stuff. But if they consume
-kludge they will also produce it. A complicated AST makes for a complicated life. 
+steps can be made to consume and parse some pretty kludgy grammar structures. If they consume
+kludge they will also produce it. A complicated AST makes for a complicated project. 
 It is worth the hours of revising your BNF grammar and lexer to save days of 
-debugging here.
+debugging further down the road.
 
 #### Handlers:
 The way I have decided to tackle MinNo's AST is to define a collection of handlers 
