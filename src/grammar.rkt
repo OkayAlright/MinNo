@@ -76,7 +76,7 @@ bool-comp: BOOL-COMP   ;;; "==" | ">" ... ect
 arrow: ARROW   ;;; "->"
 
 ; other keywords
-id: ID
+id: ID[lSqBrac (int | id) rSqBrac]
 def: DEF
 let: LET
 
