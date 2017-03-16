@@ -16,8 +16,8 @@ TO USE:
 (require "state-roster.rkt")
 
 
-(define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
-(define in-func-call #f) ;; a flag to properly wrap prog-mem variables
+;(define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
+;(define in-func-call #f) ;; a flag to properly wrap prog-mem variables
 
 
 ; unpacks an Arduino-C AST into a string
@@ -26,9 +26,9 @@ TO USE:
     (let ([program-structure (rest program-datum)]
           [sketch ""])
       (for ([item program-structure])
-        (if (equal? (first item) 'definition) (set! in-def-unpacking #t) '())
+        (if (equal? (first item) 'definition) (set-in-def-flag #t) '())
         (set! sketch (string-append sketch " " (correcter item) "\n")))
-        (if in-def-unpacking (set! in-def-unpacking #f) '())
+        (if in-def-unpacking (set-in-def-flag #f) '())
       sketch)))
 
 ; checks if a datum needs to be corrected or is ready to be unpacked.
@@ -119,16 +119,16 @@ TO USE:
 ; adds parens and commas to a func-call datum and unpacks
 (define func-call-corrector
   (lambda (func-call-datum)
-    (set! in-func-call #t) ;; start in context
+    (set-in-func-call-flag #t) ;; start in context
     (let ([func-call-string (string-append (second (second func-call-datum)) "(")]
           [call-ast (rest (rest func-call-datum))])
       (for ([item call-ast]) 
-        (set! in-func-call #t) ;; correct context for nested func calls
+        (set-in-func-call-flag #t) ;; correct context for nested func calls
         (cond [(equal? (first item) 'lparen) ""]
               [(equal? (first item) 'rparen) ""]
               [(set! func-call-string
                      (string-append func-call-string (correcter item) ","))]))
-      (set! in-func-call #f)
+      (set-in-func-call-flag #f)
       (correct-over-commaing (string-append func-call-string ")")))))
 
 ; adds parens and commas to a definition's sub-datum "args" and unpacks

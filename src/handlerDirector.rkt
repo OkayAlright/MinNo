@@ -17,6 +17,7 @@ To Use:
 
 (require "definitionHandler.rkt")
 (require "lettypeHandler.rkt")
+(require "state-roster.rkt")
 
 
 ; Handles a 'program branch of an AST
@@ -31,12 +32,14 @@ To Use:
 ; handles block statements by breaking them into one line statements and concatting them
 (define scope-statement-handler
   (lambda (datum)
+    (set-in-scope-statement-flag #t)
     (let ([block '('scope-statement)])
       (for ([item (rest datum)])
         (if (or (equal? (first item) 'lbrac) (equal? (first item) 'rbrac))
             (set! block (append block (list item)))
             (set! block (append block (list (tree-transform item))))))
-     (list block))))
+      (set-in-scope-statement-flag #f)
+      (list block))))
 
 ; processes oneline statements
 (define statement-handler
@@ -55,7 +58,6 @@ To Use:
 
 (define for-loop-handler
   (lambda (datum)
-    (printf "yup \t ~a\n\n" (seventh datum))
     (list (first datum)
           (second datum)
           (tree-transform (third datum))

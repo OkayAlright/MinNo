@@ -27,7 +27,8 @@
                                            (list (sixth datum))  ;; equal symbol
                                            (list (seventh datum)) ;;value
                                            (list (eighth datum)))) ;; delimiter
-                  (add-prog-mem-variable (third datum))))
+                  (printf "state = ~a\n\n" in-scope-statement)
+                  (if in-scope-statement '() (add-prog-mem-variable (third datum)))))
       ast-result)))
              
              
