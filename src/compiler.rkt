@@ -33,7 +33,7 @@ TO USE:
                   (and (set! token-stream (append token-stream(list (tokenize file))))
                        (reader file)))))
 
-(define source-code (open-input-file "../examples/testComplex.minno")) ;;example file
+(define source-code (open-input-file "../examples/rgbLED.minno")) ;;example file
 
 (port-count-lines! source-code)  ;;enable line counting on port
 (printf "File Found.\nTokenizing...\n")

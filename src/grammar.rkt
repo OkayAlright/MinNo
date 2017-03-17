@@ -31,7 +31,9 @@ for-loop: for (let-statement | relet-statement)
               relet-statement scope-statement
 conditional: if comparison scope-statement
              [else scope-statement]
-comparison: statement bool-comp statement ;;; "x == y"
+comparison: (statement | lparen comparison rparen)
+            bool-comp
+            (statement | lparen comparison rparen);;; "x == y"
 
 
 ; Seperating characters
@@ -60,7 +62,7 @@ div: DIV-OP
 
 ; data structure
 lit: (int | float | string | array)
-array: lSqBrac ((lit comma)* lit) rSqBrac ;;; [lit,lit,...]
+array: lSqBrac (((lit| id) comma)* (lit | id)) rSqBrac ;;; [lit,lit,...]
 int: INT
 float: FLOAT
 nonetype: NONE-TYPE

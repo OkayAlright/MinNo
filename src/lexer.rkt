@@ -60,8 +60,6 @@ Racket 6.6 | 10/2/16 | License MIT
        [#\/         (list 'DIV-OP lexeme)]
        [#\-         (list 'SUB-OP lexeme)]
        [#\+         (list 'ADD-OP lexeme)]
-       [(or "or" "||") (list 'OR lexeme)]
-       [(or "and" "&&") (list 'AND lexeme)]
        [#\{         (list 'LBRAC lexeme)]
        [#\}         (list 'RBRAC lexeme)]
        [#\(         (list 'LPAREN lexeme)]
