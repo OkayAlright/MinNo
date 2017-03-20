@@ -128,6 +128,7 @@ For MinNo, instead of spending the time making one from scratch, or
 learning the [incredibly idiom-centric syntax recognizer in Racket](https://docs.racket-lang.org/reference/stx-patterns.html)
 I opted to use a popular Racket tool for grammar specification 
 and parsing: *[brag](http://docs.racket-lang.org/brag/)*.
+[MEANTION THAT MATTHEW FLATT USES BRAG].
 
 *brag* is a *[Backus Naur form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)* (BNF)
 grammar parser implemented as a *Domain Specific Language* within Racket. Before I get into using 
@@ -199,10 +200,10 @@ Arduino Language program.
 
 #### Unpacking the Handler
 
-What the handler leaves us with is a list of lists that represent the programs AST; this is far 
+What the handler leaves us with is a list of lists that represent the program's AST; this is far 
 from executable. This is where the ***Unpacker*** comes in. The Unpacker spelunks through the 
-AST from the handlers and does one of three things:
-* Returns an inner string,
+AST and does one of three things:
+* Returns contained inner string,
 * Hands off special cases to a correcter function,
 * or calls the Unpacker on sub lists for further unpacking.
 
@@ -219,34 +220,34 @@ will wrap each reference of them (as a pointer) in a Arduino built-in function t
 memory. The compiler knows how to do these correcrtions using a directory similiar to that of
 the handler's directory function.
 
-After the unpacking phase, the resulting Arduino sketch will be returns as a full string
+After the unpacking phase, the resulting Arduino sketch will be returned as a full string
 that is written out to a file for uploading.
 
 ## Targeting AVR Processors:
 #### Making Sure Things Stayed Fast
 A goal of MinNo was to more easily handle the boiler plate code I use
 when writing Arduino scripts. Given the Arduino's slow speed and limited
-resources, I needed to make sure that the sacrifice of speed was not
-limiting the use of this boilerplate shortcut. Therefore I made the concious
+resources, I needed to make sure that the generated code was not so slow
+as to entirely undermine the reason for using MinNo. Therefore I made the concious
 decision to make MinNo more of a sublte semantic departure from C rather than
 something entirely different. It allowed me to exaggrate certain points about 
 Arduino programming that I find useful (like making immutability the default
-to make easy use of the architecture difference, rather than C's leaning 
-towards statefulness). Making it a shift in default behaviour, rather than an
-entire paradigm shift allows MinNo to be closely and consisely mapped to an
-C program with only minor runtime overhead. 
+to make easy use of the architecture difference). Making it a shift in default 
+behaviour, rather than an entire paradigm shift allows MinNo to be closely and 
+consisely mapped to a C program with only minor runtime overhead. 
 
 #### Letting People Under The Hood: Why Translator Result Readability Matters
 One day I want MinNo to be a mature enough platform to write the
-majority of my Arduino sketches in pure MinNo. But the likelihood of
+majority of my Arduino sketches in. But the likelihood of
 achieving that level of maturity while also wanting the graduate
 within 4 months of writing this seems minuscule (to put it lightly).
 
-To make up for this, the MinNo compiler focuses on making (relatively)
+To make up for this, the MinNo compiler focuses on making (subjectively)
 readable C code. Often compilers will leverage language constructs
-(such as lambdas) to make code generation easier. MinNo's template
+(such as lambdas) to make code generation easier however this 
+frequently generates code that is hard to read.[CITE] MinNo's template
 approach lets the generated code be written so it can follow
-consistent styling and formatting for readabilities sake.
+consistent styling and formatting for readability.
 
 The code being readable allows the current restrictions of MinNo to be
 bypassed by editing the resulting C script. If you really want some
@@ -259,27 +260,28 @@ Though I can say much to praise Racket, there are definitely some detractors.
 For instance, in trying to get into their syntax object I was assulted with 
 numerous conversation-specific words, phrases, and frameworks. Though the 
 documentation gave a great deal of links on where to read further, it was just
-layers upon layers of this stuff.
+layers upon layers of coversations that I had no sane introduction to. 
 
-Most of this stuff was managable, but not without staring at docs and opening a 
+Most of these topics were managable, but not without staring at docs and opening a 
 REPL again and again. Racket is a small community with hyper-specific language
 to talk about what they do. Consequently there aren't very many resources availible
-from people other than the very ones responsible for the documentation itself. 
+from people other than the ones responsible for the documentation itself. 
 
 Something like ANTLR or YACC/Flex might have been more easily approachable in hind-
-sight just due to the breathe of material for learning it.
+sight just due to the breathe of material for learning it. [CITE THAT PAPER ABOUT LISP
+BEING FOR WEIRD PEOPLE]
 
 #### Handler are Both Great and Terrible:
 
 Handlers are a wildly simpile and easy framework to use in AST processing. It allows
-for very code-modular and iterative design. Unfortunately, due to the way Racket does
-lexical parsing, it is very hard to make file-modular handlers. There are plenty of 
-peices in MinNo's handler system that can totally be seperated out into another file
-for better organization, but this is not true of all of it. If a perticular handler
-needs to call the director funtion on some sub-section of the AST is is handling, 
+for very iterative design. Unfortunately, due to the way Racket does
+lexical parsing, it is very hard to make handlers that are sperated at the file level. 
+There are plenty of pieces in MinNo's handler system that can totally be seperated out 
+into another file for better organization, but this is not true for all of it. If a 
+perticular handler needs to call the directory funtion on some sub-section of the AST is handling, 
 it needs to be in the same file as the directory. If you tried to sperate it, there would 
-need to be a cyclical dependancy of the two files. Racket does (and aboslutely should) not
-allow cyclical imports and therefore makes it impossible to seperate trampolining files
+need to be a cyclical dependancy of the two files. Racket does not (and aboslutely should not)
+allow cyclical imports and therefore makes it impossible to seperate trampolining functions
 such as certain handlers and the handler directory.
 
 # What is Left to Be Done:
@@ -296,60 +298,58 @@ the Raspberry Pi are outside of this list. Targeting GCC or LLVM (when
 the support for AVR is mainlined) will allow faster resulting code and
 wider target platform support. 
 
+[TALK ABOUT THE LLVM]
+
 #### Creating an Ecosystem & Library
 
 MinNo can do plenty of common tasks on the Arduino, but it's current
-library of keywords and functions is sparse. In interest of not only
-creating a language, but producing a tool, a standard library needs to
+library of keywords and functions is sparse. In the interestof creating 
+a useful language, a standard library needs to
 be properly fleshed out. String operations, mass pin manipulation,
-bit-shifting abilities, encoding and decoding function, and more. All
-of this needs to included to make MinNo a robust platform for
+bit-shifting abilities, encoding/decoding function, and more. All
+of this needs to be included to make MinNo a robust platform for
 embedded development.
 
-It also need to take advantage of the thousands of programming hours
+It also needs to take advantage of the thousands of programming hours
 that have already been poured into the platform. Interoperability with
-C code directly in the file is on the short list of features to tackle
-next. The use the many well coded shield libraries for the Arduino,
-the ability to directly call C is needed.
+C code directly in MinNo files is on the short list of features to tackle
+next. Their are far too many libraries for Arduino add-ons, such as sheilds,
+to reimlpement from scratch.
 
 In managing the library, C code, and all of the chips to be targeted,
 better tooling needs to be developed. The rise of languages like Rust
 and Scala can be attributed solely to their innovation as languages,
 but that would be missing a key point that other languages (like D and
-Julia) neglected and have not taken take off as a result: tooling. SBT
-(Scala's build tool) and Cargo (Rust's version of SBT) helped embedded
-programmers in a central conversation of the respective
+Julia) neglected: tooling. SBT (Scala's build tool) and Cargo (Rust's version 
+of SBT) helped root programmers in a central conversations of the respective
 languages. They allowed for immediately productive and understandable
 project structures. These common architectures allowed code to easily
 connect and communicate. MinNo needs to make a similar move into
-creating an entry point to allow coder to communicate. 
+creating an entry point to allow coders to share what they make.
 
 ## Opinions On The Ecosystem: Racket, Raco, and General House Keeping
 ##### Package Management & Tooling
-Given that Racket is meant to be built upon DSLs, it also has to have
-an easy way to share them so everyone doesn't need to reinvent the
-wheel. Therefore, Dr.Racket has a very intuitive graphical package
+With Racket's niche being a platform to build more languages, they
+needed to have some way to share the tools that programmers produce
+so no one has ot spend time reinventing the wheel.
+Therefore, Dr.Racket has a very intuitive graphical package
 manager built on top of their command line tool **raco**.
 
-Both the command line version and GUI version of the package installer
-and manager as very easy to use. The package site has all the normal
-bells and whistles you would expect as well.
-
-**pkgs.racket-lang.org** lists, with all the aesthetic intention of
+**pkgs.racket-lang.org** [LINK THIS] lists, with all the aesthetic mindfulness of
 Dr.Racket, the packages available though **raco**. It contains
 tags, links to package documentation, and checksums (if you are
 into that).
 
-A moment of panic we all have during development is when you update
-language versions or dependancies. Some projects are stuck in
-a language feature lock due to their reliance on libraries built in a
-previous version (looking at you, Python 2). While writing the MinNo
+There is a common moment of anxiety in developement when a language or 
+library releases an upgrde while you are using the now-out-of-date version.
+Some projects are stuck in a version lock (or rewrite) due to their reliance on libraries built in a
+previous version (looking at you, Python 2[CITE]). While writing the MinNo
 Compiler, Racket came out with not 1, but 2 language releases.
 
 These were minor version changes (6.7 & 6.8), so I thought about not
 jumping versions, but after reading their change-logs, I knew I had
-to. 6.7 greatly increased performance of strings in the language. 6.8
-improves optimization of equality statements. There make up the vast
+to. 6.7 greatly increased performance of strings in the language.[CITE] 6.8
+improves optimization of equality statements.[CITE] There make up the vast
 majority of operations and data handled by a compiler; it would be a
 crime to not utilize the upgrades.
 
@@ -360,7 +360,9 @@ or 2. rewrite some not trivial part of the program. After installation
 was finish, migrating my dependancies was next on the list.
 
 In the graphical version of the Racket Package Manager, there is a
-very handy migration tool from previous language installations. Once
+very handy migration tool from previous language installations. It just checks
+your previous installation of racket for downloaded libraries and will
+automatically grab them from raco for the new installation. Once
 BRAG was migrated and updated, I decided to test how much a had
 broken my code base.
 
@@ -376,7 +378,7 @@ creating a naming conflict. After some very brief searching, some
 http://stackoverflow.com/questions/17894875/overlapping-module-imports-in-racket)
 did the trick. After that, the upgrade was successful & the compiler
 felt much snappier then before (though I have no way of saying this
-objectively, since i never ran a numeric test).
+objectively, since I never ran a numeric test).
 
 One very surprising thing was that when I upgraded Racket, all of my
 preferences and settings carried over despite doing a "fresh"
@@ -390,19 +392,19 @@ has a particular use), I have grown very accustomed to using it for
 Racket development.
 
 All in all, it is not as comprehensive of a tooling
-infrastructure as **Cargo** or dynamic as something like
+infrastructure as **Cargo** or dynamically connected as something like
 **npm/bower** but there is something to be said for it's
 simplicity.
 
 ##### Feelings about Where the Language is Going
 
 Racket is unfortunately held back by it's view as a tool for education 
-and the lack of attraction that it's only development environment, Dr.Racket,
+and the lack of functional utility that it's only development environment, Dr.Racket,
 exudes. When talking to a fellow college student during an internship, I
 mentioned that I used Racket. He looked at me with some confusion. "Racket,
-we used that in high school for the intro programming course. It was terrible."
+we used that in high school for the intro programming course. It was terrible."[CITE]
 Racket was initially created as an education tool. There is a huge amount
-of resources poured into it to do as much. But with the state of the default
+of resources poured into it to do as much.  With the state of the default
 development environment, you are constantly affronted with what looks like 
 software meant to educate you, not to do serious development. Being more 
 open and accommodating with other setups for coding in Racket is absolutely 
@@ -411,19 +413,19 @@ required to attract & keep new developers.
 It is a surprise that Racket hasn't broken out of their educational roots 
 in regards to Dr.Racket like the rest of the language has. Though education
 is still a huge part of Racket, the language platform discussion has really
-taken off. It's reputation for a systems scripting language is also getting 
-some recognition as well. The language from an inner mechanics level has
+taken off.[CITE] It's reputation for a systems scripting language is also getting 
+some recognition as well.[CITE] The language from an inner mechanics level has
 evolved greatly even since I started using it (Spring, 2013). But by far
 one of the most interesting footholds I have witnessed Racket take is in 
-game scripting. You can find talks about 3d rendering systems and game 
-engines at quite a few different Racket conventions, this is not surprising.
+game scripting.[CITE] You can find talks about 3d rendering systems and game 
+engines at quite a few different Racket conventions, this is not surprising.[CITE]
 But at GDC, one of the largest graphics and game conventions currently
 the company Naughty Dog has given multiple lectures about their use of 
-LISP languages and most recently their use of Racket. Something about 
-process just seems to root around using LISP (considering they went
+LISP languages and most recently their utalization of Racket.[CITE] Something about 
+their process just seems to root around using LISP (considering they went
 through the trouble of maintaining their own sub language for a number of 
-years). For the last new (award winning) titles they have released, Racket
-has been their choice in scripting languages. 
+years).[CITE] For the last new (award winning) titles they have released, Racket
+has been their choice in scripting languages. [CITE]
 
 The movements into fields are far apart as language development and 
 gaming scripting have done a great deal to lift Racket out of it's 
