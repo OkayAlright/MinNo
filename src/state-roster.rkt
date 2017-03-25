@@ -1,5 +1,10 @@
 #lang racket
+#|
+A collection of stateful trackers (with setters and getters) 
+for the compiler and the source code it is compiling.
 
+3/24/17 | Racket 6.8 | MacOS
+|#
 (define prog-mem-variables '())
 (define variables-defined '())
 (define arrays-defined '())
@@ -7,6 +12,7 @@
 (define in-func-call #f) ;; a flag to properly wrap prog-mem variables
 (define in-scope-statement #f)
 
+;; appending setters
 (define add-prog-mem-variable
   (lambda (item)
     (set! prog-mem-variables (append prog-mem-variables (list item)))))
@@ -19,6 +25,7 @@
   (lambda (item)
     (set! arrays-defined (append arrays-defined (list item)))))
 
+;; Toggle setters
 (define set-in-def-flag
   (lambda (state)
     (set! in-def-unpacking state)))

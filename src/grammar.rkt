@@ -1,4 +1,11 @@
 #lang brag
+; grammar.rkt
+; by Logan Davis
+;
+; The grammar spec of MinNo to be consumed by BRAG.
+;
+; 3/24/17 | Racket 6.8 | MacOS
+
 
 ; main structure
 program: (let-statement | define-statement )+

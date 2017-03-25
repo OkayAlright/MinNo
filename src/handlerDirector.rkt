@@ -4,17 +4,16 @@ handlerDirector.rkt
 Logan Davis
 
 Description:
-    An in-progress transcompiler to turn a MinNo
-    AST into an Arduino-C AST to be unpacked.
+    The director for specific AST structures and handing them
+    to handlers for translating.
 
 To Use:
     Import into another racket file and call (tree-transform)
     on a syntax->datum list of a MinNo AST.
 
 
-11/28/16 | Racket 6.8 | MIT License
+3/24/17 | Racket 6.8 | MacOS
 |#
-
 (require "definitionHandler.rkt")
 (require "lettypeHandler.rkt")
 (require "state-roster.rkt")
@@ -55,7 +54,8 @@ To Use:
 (define delimited-statement-handler
   (lambda (datum)
     (append (second datum) (list (last datum)))))
-
+    
+; handles for loop structures
 (define for-loop-handler
   (lambda (datum)
     (list (first datum)

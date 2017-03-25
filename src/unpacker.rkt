@@ -11,14 +11,10 @@ DESCRIPTION:
 TO USE:
     call (unpack) on an Arduino-C AST.
 
-2/27/17 | Racket 6.8 | MacOS 10.11
+3/24/17 | Racket 6.8 | MacOS 10.11
 |#
 (require "state-roster.rkt")
-
-
-;(define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
-;(define in-func-call #f) ;; a flag to properly wrap prog-mem variables
-
+(require "formatter.rkt")
 
 ; unpacks an Arduino-C AST into a string
 (define unpack
@@ -86,7 +82,7 @@ TO USE:
                                                  (remove-delimit (correcter (sixth datum)))
                                                  ")"))
                                                  (correcter (seventh datum)))))
-
+;; corrects conditional if statements
 (define conditional-corrector
   (lambda (datum)
     (string-append "if(" (correcter (third datum)) ")"
@@ -96,10 +92,9 @@ TO USE:
                        ""))))
 
 
-
+;; deals with wrapping of values and progmem variables.
 (define correct-if-immutable-or-array
   (lambda (datum)
-    (printf "~a \n\n ~a\n" prog-mem-variables datum)
     (let ([result (second datum)])
       (if (member (second datum) arrays-defined)
           (set! result (string-append result "[]"))
@@ -146,25 +141,5 @@ TO USE:
                 (set! arg-string (string-append arg-string (second item) " "))
                 (set! arg-string (string-append arg-string (second item) ", "))))
           (correct-over-commaing (string-append "(" arg-string ")"))))))
-
-(define correct-over-commaing
-  (lambda (code-string)
-    (string-replace (string-replace code-string ",)" ")") ", )" ")")))
-
-(define correct-over-tabbing
-  (lambda (sketch)
-    (string-replace sketch "\t }" " }")))
-
-(define correct-over-spacing
-  (lambda (sketch)
-    (string-replace (string-replace sketch "      " "") "  " " ")))
-
-(define remove-delimit
-  (lambda (delimited-string)
-    (string-replace delimited-string ";\n\t" "")))
-
-(define make-one-line
-  (lambda (multi-line-string)
-    (string-replace multi-line-string ";\n\t" ";")))
-              
+          
 (provide (all-defined-out))

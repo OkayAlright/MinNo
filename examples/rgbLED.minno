@@ -1,0 +1,62 @@
+let red_pin : int = 9;
+let green_pin : int = 10;
+let blue_pin : int = 11;
+
+let display_time : int = 10;
+
+def setup none -> none {
+    pinMode red_pin OUTPUT;
+    pinMode green_pin OUTPUT;
+    pinMode blue_pin OUTPUT;
+} 
+
+def loop none -> none {
+    mainColors ;
+    showSpectrum ;
+}
+
+def mainColors none -> none {
+    let on_off_toggle: array[int] = [LOW,HIGH];
+    for let x: mutable int = 0 ; x < 2 ; x = x + 1 ;{
+        for let y: mutable int = 0 ; y < 2 ; y = y + 1 ;{
+            for let z: mutable int = 0 ; z < 2 ; z = z + 1 ;{
+                digitalWrite red_pin on_off_toggle[x]; 
+                digitalWrite blue_pin on_off_toggle[y]; 
+                digitalWrite green_pin on_off_toggle[z]; 
+                delay 1000 ; 
+            }
+        }
+    }
+}
+
+def showSpectrum none -> none {
+    for let rgb_scale: mutable int = 0; rgb_scale < 768; rgb_scale = rgb_scale + 1 ;{
+        showRGB rgb_scale;
+        delay display_time ;
+    }
+}
+
+def showRGB color:int -> none {
+    let redIntensity: mutable int = 0;
+    let greenIntensity: mutable int = 0;
+    let blueIntensity: mutable int = 0;
+
+    if color <= 255 {
+        redIntensity = 255 - color;
+        greenIntensity = color;
+        blueIntensity = 0;
+    }
+    if (color >= 256) && (color <= 511) {
+        redIntensity = 0;
+        greenIntensity = 255 - (color - 256);
+        blueIntensity = color - 256 ;
+    } else {
+        redIntensity = color - 512 ;
+        greenIntensity = 0;
+        blueIntensity = 255 - (color - 512);
+    }
+    analogWrite red_pin redIntensity;
+    analogWrite blue_pin blueIntensity;
+    analogWrite green_pin greenIntensity;
+
+}

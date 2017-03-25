@@ -1,4 +1,13 @@
 #lang racket
+#|
+lettypeHandler.rkt
+By Logan Davis
+
+Responsible for prepping and translating let declarations
+given by a handlerDirector.
+
+3/24/17 | Racket 6.8 | MacOS
+|#
 (require "state-roster.rkt")
 
 ; Handles a 'let-statement branch of an AST
@@ -27,11 +36,10 @@
                                            (list (sixth datum))  ;; equal symbol
                                            (list (seventh datum)) ;;value
                                            (list (eighth datum)))) ;; delimiter
-                  (printf "state = ~a\n\n" in-scope-statement)
                   (if in-scope-statement '() (add-prog-mem-variable (third datum)))))
       ast-result)))
              
-             
+; Appends "[]" to the id tag for C's notation            
 (define correct-id-if-array
   (lambda (id-string is-array) 
     (if is-array

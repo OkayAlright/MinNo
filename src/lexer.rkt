@@ -1,17 +1,12 @@
 #lang racket
-#|  possible_grammar_lex.rkt
+#|  
+possible_grammar_lex.rkt
+By Logan Davis
 
     Description:
         A lexer for some non-trivial grammar.
-    To Use:
-        Open in Dr. Racket and press "run".
 
-    TODO:
-        Come up with actual names for these files.
-        Break up the lexer file.
-        Debug the grammar.
-
-Racket 6.6 | 10/2/16 | License MIT
+3/24/17 | Racket 6.8 | MacOS
 |#
 (require parser-tools/lex)
 (require parser-tools/lex-sre)
@@ -34,8 +29,9 @@ Racket 6.6 | 10/2/16 | License MIT
 (define-lex-abbrev comment? (or (: "//" (* (char-complement #\newline)))
                                 (: "#/" (complement (: any-string "/#" any-string)) "/#")))
 
-(define end-of-file #f)
+(define end-of-file #f) ; are we done yet?
 
+; define file marker position
 (define line 0)
 (define column 0)
 (define offset 0)

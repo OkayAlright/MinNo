@@ -19,6 +19,4 @@ def loop none -> none {
     digitalWrite outputPin HIGH;
     delay 1000;
     digitalWrite outputPin LOW;
-    delay 1000;
-    digitalWrite outputPin LOW;
 }

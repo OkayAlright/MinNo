@@ -8,10 +8,12 @@ DESCRIPTION:
     for MinNo.
 
 TO USE:
-    Currently, change the input and output
-    file paths and press command-R (macOS)
+    Run from the command like and provide two arguements:
+     - source_file: the MinNo file that you want to compile.
+     - output_file: the path and name you want to give the 
+                    resulting C program.
 
-2/27/17 | Racket 6.8 | OS: MacOS
+3/24/17 | Racket 6.8 | OS: MacOS
 |#
 
 (require (prefix-in brag: brag/support))
@@ -33,33 +35,34 @@ TO USE:
                   (and (set! token-stream (append token-stream(list (tokenize file))))
                        (reader file)))))
 
-(define source-code (open-input-file "../examples/rgbLED.minno")) ;;example file
+(define source-code (open-input-file (vector-ref (current-command-line-arguments) 0))) ;;example file
 
 (port-count-lines! source-code)  ;;enable line counting on port
 (printf "File Found.\nTokenizing...\n")
 
 (if (equal? (reader source-code) '())   ;If no mal-formed return was produced, print success
     (printf "File has been tokenized.\nParsing...\n")
-    (printf "Error tokenizing file!\n"))
+    (and (printf "Error tokenizing file!\n")
+         (exit)))
 
-(define t (syntax->datum (parse token-stream)))
+(define tree-raw (syntax->datum (parse token-stream)))
 
-(printf "\nResult:\n-------\n~a" t)
+;;(printf "\nResult:\n-------\n~a" tree-raw)
 
-(define a (tree-transform t))
-(printf "\nResult:\n-------\n~a" a)
+(define ast-translated (tree-transform tree-raw))
+;; (printf "\nResult:\n-------\n~a" ast-translated)
 
-(define output-string (unpack a)) ;; parse and return a datum
+(define output-string (unpack ast-translated)) ;; parse and return a datum
 
 
 
 (printf "\nResult:\n-------\n~a" output-string)
 
-(with-output-to-file "../examples/testcomplex.c" #:exists 'replace
+(with-output-to-file (vector-ref (current-command-line-arguments) 1) #:exists 'replace
   (lambda ()
     (printf "~a" output-string)))
 
-(printf "Done!")
+(printf "Done!\n")
 (exit)
 
 

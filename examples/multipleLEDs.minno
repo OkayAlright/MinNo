@@ -1,0 +1,116 @@
+let ledPins: array[int] = [2,3,4,5,6,7,8,9];
+
+def setup none -> none {
+    for let i: mutable int = 0; i <= 7; i = i + 1 ;{
+        pinMode ledPins[i] OUTPUT;
+    }
+}
+
+def loop none -> none {
+    oneAfterAnotherNoLoop;
+    //oneAfterAnotherLoop;
+    //oneOnAtATime;
+    //pingPong;
+    //marquee;
+    //randomLED;
+}
+
+def oneAfterAnotherNoLoop none -> none {
+    let delaytime: int = 100;
+
+    digitalWrite ledPins[0] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[1] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[2] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[3] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[4] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[5] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[6] HIGH ;
+    delay delaytime;
+    digitalWrite ledPins[7] HIGH ;
+    delay delaytime;
+
+    digitalWrite ledPins[7] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[6] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[5] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[4] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[3] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[2] LOW ;
+    delay delaytime;
+    digitalWrite ledPins[1] LOW ;
+    delay delaytime;
+}
+
+def oneAfterAnotherLoop none -> none {
+    let delaytime : int = 0;
+
+    for let index: mutable int = 0; index <= 7; index = index + 1;{
+        digitalWrite ledPins[index] HIGH;
+        delay delaytime;
+    }
+
+    for index = 7; index >= 0; index = index - 1;{
+        digitalWrite ledPins[index] LOW;
+        delay delaytime;
+    }
+
+}
+
+def oneOnAtATime none -> none {
+    let delaytime : int = 0;
+
+    for let index: mutable int = 0; index <= 7; index = index + 1;{
+        digitalWrite ledPins[index] HIGH;
+        delay delaytime;
+        digitalWrite ledPins[index] LOW;
+    }
+}
+
+def oneOnAtATime none -> none {
+    let delaytime : int = 100;
+
+    for let index: mutable int = 0; index <= 7; index = index + 1;{
+        digitalWrite ledPins[index] HIGH;
+        delay delaytime;
+        digitalWrite ledPins[index] LOW;
+    }
+
+    for index = 7; index >= 0; index = index - 1;{
+        digitalWrite ledPins[index] HIGH;
+        delay delaytime;
+        digitalWrite ledPins[index] LOW;
+    }
+}
+
+def marquee none -> none {
+    let delaytime : int = 200;
+    let skip: mutable int = 0;
+
+    for let index: mutable int = 0; index <= 3; index = index + 1;{
+        skip = index + 3;
+        digitalWrite ledPins[index] HIGH;
+        digitalWrite ledPins[skip] HIGH;
+        delay delaytime;
+        digitalWrite ledPins[index] LOW;
+        digitalWrite ledPins[skip] LOW;
+    }
+}
+
+def randomLED none -> none {
+    let delaytime : int = 200;
+    let index: mutable int = random 8;
+
+    digitalWrite ledPins[index] HIGH;
+    delay delaytime;
+    digitalWrite ledPins[index] LOW;
+}
