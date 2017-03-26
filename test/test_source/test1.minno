@@ -6,7 +6,7 @@ This file is use dto run test on the compiler.
 /#
 
 //progmem let test
-let ledpin : int = 13;
+let ledpin : int = -13;
 let stringtest : array[char] = "this is a test string.\n";
 let testfloat : float = 5.0;
 

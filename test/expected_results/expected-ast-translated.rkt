@@ -5,7 +5,7 @@
    (type "const PROGMEM int")
    (id "ledpin")
    (eq "=")
-   (statement (expr (term (factor (lit (int "13"))))))
+   (statement (expr (term (factor (lit (int "-13"))))))
    (delimit ";"))
   (declaration
    (type "const PROGMEM char")

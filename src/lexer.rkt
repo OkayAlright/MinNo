@@ -12,9 +12,10 @@ By Logan Davis
 (require parser-tools/lex-sre)
 (require (prefix-in brag: brag/support))
 
-(define-lex-abbrev int? (+ (char-range #\0 #\9)))
+(define-lex-abbrev int? (: (? "-") (+ (char-range #\0 #\9))))
 
-(define-lex-abbrev float? (: (+ (char-range #\0 #\9))
+(define-lex-abbrev float? (: (? "-")
+                             (+ (char-range #\0 #\9))
                              "."
                              (+ (char-range #\0 #\9))))
 

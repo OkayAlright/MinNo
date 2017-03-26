@@ -39,6 +39,8 @@ language and ecosystem (MinNo's implementation language).
             - [Package Management & Tooling](#package-management--tooling)
         - [Feelings about Where the Language is Going](#feelings-about-where-the-language-is-going)
     - [Bibliography:](#bibliography)
+        - [Directly cited:](#directly-cited)
+        - [Background resources:](#background-resources)
 
 <!-- /TOC -->
 
@@ -46,9 +48,9 @@ language and ecosystem (MinNo's implementation language).
 For the lexer, parser, translator, and various tools of MinNo, 
 I chose to use Racket. Formerly known as PLT scheme, Racket is
 one of the many opinionated  and highly idiosyncratic members of the 
-LISP family of languages.[1](https://racket-lang.org/new-name.html) Where CLISP emphasizes out-of-the-box productivity, Clojure 
+LISP family of languages.[1] Where CLISP emphasizes out-of-the-box productivity, Clojure 
 focuses on functional constructions, and Scheme strives towards 
-simplicity, Racket has built itself around specificity.[2](http://www.paulgraham.com/lispfaq1.html)[3](https://clojure.org/about/rationale)
+simplicity, Racket has built itself around specificity.[2][3]
 
 Originally, Racket was an education
 centric platform. It's homegrown IDE, ***DR.Racket*** allows for you
@@ -71,7 +73,7 @@ a compiler for MinNo.
 
 ## The Lexer Itself: The Matt Might Method
 In creating this compiler, by far the most helpful resource was
-Matt Might's blog posts about his compiler course.[4](http://matt.might.net/teaching/compilers/spring-2015/) The lessons
+Matt Might's blog posts about his compiler course.[4] The lessons
 are brief, but give an excellent overview of what one needs to do 
 to make a compiler. I most heavily leaned on his course syllabus and
 class notes for MinNo's lexer.
@@ -90,7 +92,7 @@ is to strap together a collection of [regular expressions](https://en.wikipedia.
 or function that consumes a source file and returns a collection of tokens.
 
 Racket, being a language platform, has a builtin [lexer & regex library](https://docs.racket-lang.org/parser-tools/Lexers.html).
-Matt Might thinks highly of it and uses it in his own compiler course.[5](http://matt.might.net/articles/lexers-in-racket/)
+Matt Might thinks highly of it and uses it in his own compiler course.[5]
 An example of how to construct a lexer in Racket, using our basic calculator 
 language, may look something like the following:
 
@@ -141,11 +143,11 @@ debugging information about the source file it is lexing. For parsing libraries 
 the one I used (which I will get to next), it expects the lexer to append the location 
 of tokens in the source file being compiled to use when reporting a parsing error.
 The lexer can also be a place to catch stylistic warnings (such as rustc's enforcing
-of *snake_case*).[6](https://www.reddit.com/r/rust/comments/29sumo/warning_function_foobarshould_have_a_snake_case/))
- 
+of *snake_case*).[6]
+
 ### The State of MinNo's Lexer:
 [MinNo's lexer](http://git.logan-h-g-davis.io/logan/minno/blob/master/src/lexer.rkt) works on an architecture similar to that used by Matt Might
-to take advantage of [Racket's input ports](https://docs.racket-lang.org/reference/stringport.html).[7](https://github.com/mattmight/derp2)
+to take advantage of [Racket's input ports](https://docs.racket-lang.org/reference/stringport.html).[7]
 The lexer consumes a file-port's output and gathers it in a buffer. This is recursively done
 until the source file-port is empty. The resulting collection of tokens are passed
 to MinNo's parser.
@@ -156,7 +158,7 @@ in the translation step), or stylistic warnings (like I previously meantioned) w
 be looked at when revising the lexer.
 
 ## BRAG: How I Avoided Losing My Life to Making a Parser
-Parsing is a topic of exploration large enough to the spend an entire dissertation on.[8](http://digitalassets.lib.berkeley.edu/etd/ucb/text/Hall_berkeley_0028E_15470.pdf)
+Parsing is a topic of exploration large enough to the spend an entire dissertation on.[8]
 For MinNo, instead of spending the time making one from scratch, or 
 learning the [incredibly idiom-centric syntax recognizer in Racket](https://docs.racket-lang.org/reference/stx-patterns.html)
 I opted to use a popular Racket tool for grammar specification 
@@ -196,7 +198,7 @@ grammar.
 A few different versions of [MinNo's grammar](http://git.logan-h-g-davis.io/logan/minno/blob/master/src/grammar.rkt) were toyed around with. Originally, 
 MinNo was going to be of a LISP grammar, but between the limitations a LISP interpreter
 would have and the shoe-horned-ness of compiling it, I decided against 
-the project.[9](http://www.technoblogy.com/show?1GX1) Later iterations took notes from F#,
+the project.[9] Later iterations took notes from F#,
 Scala, Java, Python, and, Pyret. The result of those revisions is what you see currently.
 I feel it is a nice balance between Scala and F#'s (subjectively) clear type notation,
 and Python's clear syntax. By no means does it reach in any of those
@@ -372,12 +374,12 @@ into that).
 There is a common moment of anxiety in developement when a language or 
 library releases an upgrde while you are using the now-out-of-date version.
 Some projects are stuck in a version lock (or rewrite) due to their reliance on libraries built in a
-previous version. While writing the MinNo Compiler, Racket came out with not 1, but 2 language releases.[10](http://blog.racket-lang.org/2016/10/racket-v67.html)[11](http://blog.racket-lang.org/2017/01/racket-v6-8.html)
+previous version. While writing the MinNo Compiler, Racket came out with not 1, but 2 language releases.[10][11]
 
 These were minor version changes (6.7 & 6.8), so I thought about not
 jumping versions, but after reading their change-logs, I knew I had
-to. 6.7 greatly increased performance of strings in the language.[12](http://blog.racket-lang.org/2016/10/racket-v67.html) 6.8
-improves optimization of equality statements.[13](http://blog.racket-lang.org/2017/01/racket-v6-8.html) There make up the vast
+to. 6.7 greatly increased performance of strings in the language.[12] 6.8
+improves optimization of equality statements.[13]There make up the vast
 majority of operations and data handled by a compiler; it would be a
 crime to not utilize the upgrades.
 
@@ -441,10 +443,10 @@ It is a surprise that Racket hasn't broken out of their educational roots
 in regards to Dr.Racket like the rest of the language has. Though education
 is still a huge part of Racket, the language platform discussion has really
 taken off. By far one of the most interesting footholds I have witnessed Racket take is in 
-game scripting as the main language for one of the most celebrated Sony developers.[14](https://www.youtube.com/watch?v=oSmqbnhHp1c) 
+game scripting as the main language for one of the most celebrated Sony developers.[14]
 Something about their process just seems to root around using LISP (considering they went
 through the trouble of maintaining their own sub language for a number of 
-years).[15](http://all-things-andy-gavin.com/2011/03/12/making-crash-bandicoot-gool-part-9/) For the last new (award winning) titles they have released, Racket
+years).[15] For the last new (award winning) titles they have released, Racket
 has been their choice in scripting languages.
 
 The movements into fields are far apart as language development and 
@@ -455,3 +457,30 @@ be up there with Clojure as the new face of LISP.
 
 
 ## Bibliography:
+### Directly cited:
+* \[1]: https://racket-lang.org/new-name.html
+* \[2]: http://www.paulgraham.com/lispfaq1.html
+* \[3]: https://clojure.org/about/rationale
+* \[4]: http://matt.might.net/teaching/compilers/spring-2015/
+* \[5]: http://matt.might.net/articles/lexers-in-racket/
+* \[6]: https://www.reddit.com/r/rust/comments/29sumo/warning_function_foobarshould_have_a_snake_case/
+* \[7]: https://github.com/mattmight/derp2
+* \[8]: http://digitalassets.lib.berkeley.edu/etd/ucb/text/Hall_berkeley_0028E_15470.pdf
+* \[9]: http://www.technoblogy.com/show?1GX1
+* \[10]: http://blog.racket-lang.org/2016/10/racket-v67.html
+* \[11]: http://blog.racket-lang.org/2017/01/racket-v6-8.html
+* \[12]: http://blog.racket-lang.org/2016/10/racket-v67.html
+* \[13]: http://blog.racket-lang.org/2017/01/racket-v6-8.html
+* \[14]: https://www.youtube.com/watch?v=oSmqbnhHp1c
+* \[15]: http://all-things-andy-gavin.com/2011/03/12/making-crash-bandicoot-gool-part-9/
+
+### Background resources:
+These were sources that helped inform me in how to build and program a compiler but had no 
+direct quote or idea echoed in this paper.
+
+* https://www.cs.swarthmore.edu/~jpolitz/cs75/s16/s_schedule.html
+* http://norvig.com/lispy.html
+* http://www.furidamu.org/blog/2012/03/23/scalisp-a-lisp-interpreter-in-scala/
+* http://www.cs.indiana.edu/~dyb/pubs/nano-jfp.pdf
+* https://www.youtube.com/watch?v=-6BsiVyC1kM
+* https://www.youtube.com/watch?v=Y7-OoXqNYgY

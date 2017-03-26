@@ -7,7 +7,7 @@
    (colon ":")
    (type "int")
    (eq "=")
-   (statement (expr (term (factor (lit (int "13"))))))
+   (statement (expr (term (factor (lit (int "-13"))))))
    (delimit ";"))
   (let-statement
    (let "let")
