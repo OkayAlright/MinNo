@@ -62,7 +62,7 @@ sketch. Global values are variables that you want to reference
 through out the sketch, the setup function runs once at boot, 
 after the setup function the loop function will run until the 
 board is reset or powered off. Any functions written other than
-those two will only be called if explicitely invoked by some other
+those two will only be called if invoked by some other
 code. 
 
 ### A Quick Start
@@ -97,31 +97,31 @@ The next line:
 
      let outputPin : int = 13;
 
-It an exmaple of one of the kinds of variable declarations in MinNo. "let" is 
-like Javascripts "var" stating that you are about to reference a variable that
+It an example of one of the kinds of variable declarations in MinNo. "let" is 
+like Javascript's "var" stating that you are about to reference a variable that
 will need to be allocated. "outputPin" is used as the values ID and it's type 
-is stated right after the colon seperating it from the ID. This "colon type" marker
+is stated right after the colon separating it from the ID. This "colon type" marker
 is non optional. The rest of the line is fairly straight forward, noting that the literal
 value associated with this ID is the number 13. A semi-colon acts as a statement delimiter,
-similiar to C.
+similar to C.
 
 After declaring the value, there are two function definitions. These are the required 
 Setup and Loop functions in every MinNo script. The keyword "def" denotes that the following 
-ID will be used for a function definition. After the ID is the type signature (arguements and
-return type). The Setup and Loop functions both take no arguements and return nothing, so 
+ID will be used for a function definition. After the ID is the type signature (arguments and
+return type). The Setup and Loop functions both take no arguments and return nothing, so 
 "none -> none" says "I take nothing and I given nothing." As mentioned earlier, the Setup 
 function runs once and the Loop functions runs as long as the board is powered after that.
 In Setup the only line in it's definition (delimited by "{" and "}") calls the function 
 "pinMode" to set up a pin for output. It is passed "outputPin" (the value we defined) and 
 "OUTPUT" (a builtin value common in Arduino programming). MinNo function calls consume
-all whitespace-seperated IDs and literals after the function name until a colon is found. 
+all whitespace-separated IDs and literals after the function name until a colon is found. 
 No parenthesis needed. Section 2.3.0 goes over how to nest function calls within
 the same line (as a preview, you wrap inner function calls in parenthesis). The Loop
 function calls two functions twice: "digitalWrite" and "delay". "digitalWrite" sets an 
 output value to a pin ("outputPin" in this case). The value is set by the second arguement. 
 This is case it flips between "HIGH" and "LOW", other builtin values comparable to "on" and
 "off". In between each call to "digitalWrite" there is a delay followed by "1000".
-This will cause the Arduinio board to stop everything for 1000 milliseconds (1 seccond) and 
+This will cause the Arduino board to stop everything for 1000 milliseconds (1 seccond) and 
 then continue. So this script turns pin 13 on, waits a second, turns it off, and than waits a 
 second before turning it back on again (and again and again).
 
@@ -154,15 +154,15 @@ MinNo's types closely match C's. Here are the builtin types in MinNo:
 
      let exampleIntArray : arrayt[int]  = [1,2,3,4,5];
 
-     let exampleString : arrayt[char]  = "This is how a string is declared.\n";
+     let exampleString : array[char]  = "This is how a string is declared.\n";
 
      Arrays are index using zero-indexing by referencing the arrays ID with a integer
      corresponding the the index you want wrapped in square brackets after it.
 
 ### 2.0.2 Operators
 
-The arithmatic operators in MinNo are the standard "+", "-", "*", and "/". They 
-are additon, subtraction, multiplication, and division respectively.
+The arithmetic operators in MinNo are the standard "+", "-", "*", and "/". They 
+are addition, subtraction, multiplication, and division respectively.
 There are infix boolean operators as well: 
 
 * == : check to see if the numbers on both side are equal, in which case true, otherwise false.
@@ -178,16 +178,16 @@ you want to resolve in the inner most parenthesis and work out from there.
 
 
 ### 2.1.0 Declaring Values
-One of the most fundimental parts of any programming language is how to declare variables.
+One of the most fundamental parts of any programming language is how to declare variables.
 Given that MinNo targets Harvard Architecture processors (which can handle variables in
 memory very differently from x86 and ARM processors), variable declaration is actually one
-of the more nuanced sections of the language. The main difference between delcarations in
+of the more nuanced sections of the language. The main difference between declarations in
 MinNo will be broken down into two sections. Before getting into that here is some general 
 information that is true for both major classes of data.
 
-You have to give a value upon intializing a vairable in MinNo. No null types here. This means
+You have to give a value upon initializing a variable in MinNo. No null types here. This means
 that some sections of code might result in long lines, but it avoids null pointer errors. You must
-also explictly given each variable a type. Speaking of which, here are the builtin types in 
+also give each variable a type. Speaking of which, here are the builtin types in 
 MinNo:
 * int : 1, 2, 3, -56 and so on. This is for negative or positive whole numbers.
 
@@ -205,35 +205,35 @@ MinNo:
 
 * array : a collection of any of the other types. This subtype is denoted by it's keyword after the array keyword wrapped in square brackets. This is also how strings are made (as arrays of chars).
 
-     let exampleIntArray : arrayt[int]  = [1,2,3,4,5];
+     let exampleIntArray : array[int]  = [1,2,3,4,5];
 
-     let exampleString : arrayt[char]  = "This is how a string is declared.\n";
+     let exampleString : array[char]  = "This is how a string is declared.\n";
 
      Arrays are index using zero-indexing by referencing the arrays ID with a integer
      corresponding the the index you want wrapped in square brackets after it.
 
 The name of a variable can be any collection letters, underscores, and numbers (as long as they
-don't start the ID name). Any reoccuring name in the script must be the same type and mutability
-class as the other occurences regardless of scope. This helps to stop "x" being reused as a
+don't start the ID name). Any re occurring name in the script must be the same type and mutability
+class as the other occurrences regardless of scope. This helps to stop "x" being reused as a
 throw-away name all over a single sketch.
 
 #### 2.1.1 Immutable Variables
-By default all variables are immutable it MinNo. Specifcally they act like a variable in 
+By default all variables are immutable it MinNo. Specifically they act like a variable in 
 C declares with the keyword "const". You cannot reassign a new value after the variable is 
 declared. 
 
 Within immutable declarations, there are two classes of data: stack and program data. Stack immutables
-are immutable values defined within function definitions. These exact exaclty like C's "const" values. 
+are immutable values defined within function definitions. These exact exactly like C's "const" values. 
 The only restriction they entail is that they cannot be reassigned. 
 
-The second group of immutable data sctructures are call "program data". This is to leverage the Havard 
-memory model. Any immutable value at the global level is stored in PROGMEM instead of flash stoarge and 
-ram. variables in PROGMEM are quickly accessable and entirely seperated from the other storage areas.
+The second group of immutable data structures are call "program data". This is to leverage the Harvard 
+memory model. Any immutable value at the global level is stored in PROGMEM instead of flash storage and 
+ram. variables in PROGMEM are quickly accessible and entirely separated from the other storage areas.
 The details of declaring and accessing these values are handled by MinNo, so you don't need to worry about
 it if you don't want to.
 
 #### 2.1.2 Mutable Variables
-Now sometimes you want mutable variables for iteraters or summing variables. MinNo allows the declaration
+Now sometimes you want mutable variables for iterators or summing variables. MinNo allows the declaration
 of mutable variables with the "mutable" keyword placed before it's type. For example:
 
      let exampleMutableInt: mutable int = 6;
@@ -246,7 +246,7 @@ This creates a mutable integer that allows you to reassign it's value like so:
 
 All function definitions take a similar form in MinNo:
 
-     def <some name> <ID-type tuple for arguements or "none"> -> <type or "none"> {
+     def <some name> <ID-type tuple for arguments or "none"> -> <type or "none"> {
          <Your code>
      }
 
@@ -265,8 +265,8 @@ contrived function to multiply two numbers and add 2 to the result
          return (x * y) + 2 ;
      }
 
-Now we have some arguements to parse. After the function ID, there are two arguements
-seperated by a comma (as each arguement need to be). One is labeled "x" and the other as "y".
+Now we have some arguments to parse. After the function ID, there are two arguments
+separated by a comma (as each argument needs to be). One is labeled "x" and the other as "y".
 Both are integers.
 
 ### 2.3.0 Using Functions and Values Together
@@ -282,20 +282,20 @@ with "3" to another "multAndAddTwo". The same is true for operations:
      multAndAddTwo (5 * 9) 2;
 
 ### 2.4.0 Iteration
-Though the leaning towards immutablity might suggest a leaning towards recursive function as well 
+Though the leaning towards immutability might suggest a leaning towards recursive function as well 
 (thusly leaning towards the functional programming camp), Arduino's memory is far too limited to 
 deal with recursion nicely. So MinNo has both "for" and "while" loops. It also supports recursive 
 definitions if you feel like shooting yourself in the foot. 
 
-For most interation, a "for" loop will do. A for loop in MinNo works like any other for loop in C or
+For most iteration, a "for" loop will do. A for loop in MinNo works like any other for loop in C or
 Javascript. It is made of a few basic parts:
 
-      for <delcaration or assignment of valirable> ; conditional ; incrementor ;{
+      for <declaration or assignment of variable> ; conditional ; incrementor ;{
           <code>
       }
-The declaration or assignment of a variable allows the creation or prep of a vairable to
-track the for loops iteration. The conditonal, when false, will stop the for loop to continue
-thorugh your sketch, and the incrementor happens at the end of every pass through the for loop.
+The declaration or assignment of a variable allows the creation or prep of a variable to
+track the for loops iteration. The conditional, when false, will stop the for loop to continue
+through your sketch, and the incrementor happens at the end of every pass through the for loop.
 Here is an example with some filler values that sum subsequent integers:
 
      let sum: mutable int = 0;
@@ -325,8 +325,8 @@ form:
          <your code if false>
      }
 
-Your boolean expression can be nested boolean expressions within eachother to get fairly complicated
-behaviour. Currently there is no abilty to chain "else-if" branches. This should be fixed soon.
+Your boolean expression can be nested boolean expressions within each other to get fairly complicated
+behavior. Currently there is no ability to chain "else-if" branches. This should be fixed soon.
 
 <hr>
 
@@ -361,7 +361,7 @@ that subset.
 > **pinMode** sets a digital pin (pin's 2 through 13) to be in either **INPUT** or **OUTPUT** mode. 
 > This should be called in a Setup function at the beginning of a script.
 >
-> Arguements:
+> arguments:
 > * *pin*: An integer representing the pin you are setting.
 > * *mode*: Either **OUTPUT** or **INPUT** depending on whether you want to read or write from a pin.
 
@@ -377,7 +377,7 @@ Example:
 
 > **digitalWrite** outputs a given value (typically **HIGH** or **LOW**) to a digital pin.
 >
-> Arguements:
+> arguments:
 > * *pin*: An integer representing the pin you are setting.
 > * *value*: Typically **HIGH** or **LOW** (on or off respectively).
 Example:
@@ -390,9 +390,9 @@ Example:
 
 #### digitalRead
 
-> **digitalRead** reads and returns either **LOW** or **HIGH** from a specified digitial pin.
+> **digitalRead** reads and returns either **LOW** or **HIGH** from a specified digital pin.
 >
-> Arguements:
+> arguments:
 > * *pin*: An integer representing the pin you want to read from
 
 Example:
@@ -410,7 +410,7 @@ Example:
 > **analogWrite** outputs a given value to any pin that is marked as analog or for Pulse
 Width Modulation (PWM). This value can be within a range of 0 to 255.
 >
-> Arguements:
+> arguments:
 > * *pin*: An integer representing the pin you are setting.
 > * *value*: Can be any 8-bit value for analog pins or any 8 bit value for digital PWM. Please reference your board to see which is which.  
 
@@ -425,7 +425,7 @@ Example:
 
 > **analogRead** reads and returns some value between 0 and 1024 from a specified analog pin.
 >
-> Arguements:
+> arguments:
 > * *pin*: An integer representing the pin you want to read from
 
 Example:
@@ -457,7 +457,7 @@ Example:
 > **delay** halts all operations on the board for a specified number of milliseconds.
 > After that time has passed, the board resumes execution.
 > 
-> Arguements:
+> arguments:
 > * *time*: the number of milliseconds you want to pause for.
 
 <hr>
@@ -474,7 +474,7 @@ Example:
 > Returns the small of two passed numbers. This can be used to limit
 > the largest number assigned to a variable.
 >
-> Arguements:
+> arguments:
 > * *x*: One of the two values to possibly be returned.
 > * *y*: The other value to compare it to.
 
@@ -483,7 +483,7 @@ Example:
 #### max
 > Like *min* but returns the larger of the two.
 >
-> Arguements:
+> arguments:
 > * *x*: One of the two values to possibly be returned.
 > * *y*: The other value to compare it to.
 
@@ -492,7 +492,7 @@ Example:
 #### abs
 > Calulates and return the absolute value of a passed integer.
 >
-> Arguements:
+> arguments:
 > * *x*: some integer to calculate the aboslute value of.
 >
 
@@ -502,9 +502,9 @@ Example:
 > Takes a given number, it's possible range, and a desired range
 > and constrains that given value from its original range into
 > the desired one. This is useful for restricting the input from 
-> **analogRead** to some ananlog output value (a 10-bit to 8-bit map).
+> **analogRead** to some analog output value (a 10-bit to 8-bit map).
 >
-> Arguements:
+> arguments:
 > * *valueToMap*: The value you want to constrain.
 > * *originalMin*: the lower bounds of the original input.
 > * *originalMax*: the upper bounds of the original input.
@@ -524,7 +524,7 @@ Example:
 #### pow
 > Computes and returns a passed number raise to another passed number.
 >
-> Arguements:
+> arguments:
 > * *value*: the number to raise.
 > * *exponent*: the number to raise *value* by.
 
@@ -533,7 +533,7 @@ Example:
 #### sqrt
 > Computes and returns the square root of a passed number.
 >
-> Arguements:
+> arguments:
 > * *x*: the integer to computer a square root for.
 
 <hr>
