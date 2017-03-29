@@ -125,7 +125,7 @@ change in the very near future. :)
 
 * "src/": The source code for the actual compiler is contained within this directory. The lexer, parser-spec, and translator can all be found there.
 * "example/": Some example programs in MinNo.
-* "resource/": Would be better titled "lib" because it just hold some files that the compiler needs. Expect that name to change.
+* "extras/": Documentation about the language and papers/writing about the construction of MinNo.
 
 This compiler was started on Racket 6.6 but is currently being developed
 using Racket 6.8 and the only dependency to run it will be Racket itself and 
