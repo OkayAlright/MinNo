@@ -4,7 +4,7 @@ MiNo is a MINimal NOise language for Arduino and AVR processors.
 The languages is currently under development as part of a 
 Marlboro College Plan of Concentration. 
 
-#Example Code:
+# Example Code:
 
      #/
      blink.minno
