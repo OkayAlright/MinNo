@@ -2,9 +2,8 @@
 blink.minno
 by Logan Davis
 
-    "A hopeless attempt to see if things are working."
-
-2/27/17 | Minno V"too early to tell" | devOS: macOS
+   An example blink program.
+   
 /#
 
 let outputPin : int = 13; //set pin for reference
