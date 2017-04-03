@@ -11,6 +11,7 @@ for the compiler and the source code it is compiling.
 (define in-def-unpacking #f) ;; a flag for if the unpacker is in a file definition
 (define in-func-call #f) ;; a flag to properly wrap prog-mem variables
 (define in-scope-statement #f)
+(define tab-level 0)
 
 ;; appending setters
 (define add-prog-mem-variable
@@ -37,5 +38,10 @@ for the compiler and the source code it is compiling.
 (define set-in-scope-statement-flag
   (lambda (state)
     (set! in-scope-statement state)))
+
+(define set-tab-level
+  (lambda (level)
+    (set! tab-level level)))
+    ;(if (< tab-level 0) (set! tab-level 0) '())))
 
 (provide (all-defined-out))

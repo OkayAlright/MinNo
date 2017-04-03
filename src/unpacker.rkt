@@ -54,11 +54,11 @@ TO USE:
 ; Either returns a corrected string or passes off the datum to a handler
 (define correction-handler
   (lambda (datum)
-    (cond [(equal? (first datum) 'delimit) ";\n\t"]
+    (cond [(equal? (first datum) 'delimit) (string-append ";\n" (make-string tab-level #\tab))]
           [(equal? (first datum) 'lSqBrac) "{"]
           [(equal? (first datum) 'rSqBrac) "}"]
-          [(equal? (first datum) 'lbrac) "{\n\t"]
-          [(equal? (first datum) 'rbrac) "}\n"]
+          [(equal? (first datum) 'lbrac) (increase-tab-level-and-start-block)]
+          [(equal? (first datum) 'rbrac) (lower-tab-level-and-delimit-block)]
           [(equal? (first datum) 'args) (arg-corrector datum)]
           [(equal? (first datum) 'func-call) (func-call-or-id datum)]
           [(equal? (first datum) 'id) (correct-if-immutable-or-array datum)]
@@ -66,6 +66,16 @@ TO USE:
           [(equal? (first datum) 'for-loop) (for-loop-corrector datum)]
           [(equal? (first datum) 'conditional) (conditional-corrector datum)]
           [else "PLACEHOLDER"])))
+
+(define lower-tab-level-and-delimit-block
+  (lambda ()
+    (set-tab-level (- tab-level 1))
+    (string-append "}\n" (make-string tab-level #\tab))))
+
+(define increase-tab-level-and-start-block
+  (lambda ()
+    (set-tab-level (+ tab-level 1))
+    (string-append "{\n" (make-string tab-level #\tab))))
 
 
 
@@ -75,11 +85,13 @@ TO USE:
 
 (define for-loop-corrector
   (lambda (datum)
+    
     (string-append (make-one-line (string-append "for("
-                                                 (correcter (third datum))
-                                                 (correcter (fourth datum))
-                                                 (correcter (fifth datum))
-                                                 (remove-delimit (correcter (sixth datum)))
+                                                 (remove-tabs-and-newlines
+                                                  (string-append (correcter (third datum))
+                                                                 (correcter (fourth datum))
+                                                                 (correcter (fifth datum))
+                                                                 (remove-delimit (correcter (sixth datum)))))
                                                  ")"))
                                                  (correcter (seventh datum)))))
 ;; corrects conditional if statements

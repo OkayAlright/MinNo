@@ -15,6 +15,18 @@ A set of utils for string correction in the MinNo compiler
   (lambda (sketch)
     (string-replace sketch "\t }" " }")))
 
+(define remove-tabs
+  (lambda (sketch)
+    (string-replace sketch "\t" ""))) 
+
+(define remove-newline
+  (lambda (sketch)
+    (string-replace sketch "\n" "")))
+
+(define remove-tabs-and-newlines
+  (lambda (sketch)
+    (remove-tabs (remove-newline sketch))))
+
 (define correct-over-spacing
   (lambda (sketch)
     (string-replace (string-replace sketch "      " "") "  " " ")))
