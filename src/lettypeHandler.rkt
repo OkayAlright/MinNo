@@ -21,21 +21,21 @@ given by a handlerDirector.
          (if mutable?                          ;; if immutable, catalog it
              
              (and (set! is-array (equal? (second (sixth datum)) "array"))
-                  (set! ast-result (append (list 'declaration)
-                                           (list (list 'type (letType-handler-get-type (sixth datum)))) ;;type
-                                           (list (correct-id-if-array (third datum) is-array))  ;; id
-                                           (list (seventh datum))  ;; equal symbol
-                                           (list (eighth datum)) ;;value
-                                           (list (ninth datum)))))
+                  (set! ast-result (list  'declaration
+                                          (list 'type (letType-handler-get-type (sixth datum))) ;;type
+                                          (correct-id-if-array (third datum) is-array)  ;; id
+                                          (seventh datum)  ;; equal symbol
+                                          (eighth datum);;value
+                                          (ninth datum))))
              (and (set! is-array (equal? (second (fifth datum)) "array"))
-                  (set! ast-result (append (list 'declaration)
-                                           (list (list 'type (string-append
-                                                              "const PROGMEM "
-                                                              (letType-handler-get-type (fifth datum))))) ;;type
-                                           (list (correct-id-if-array (third datum) is-array))  ;; id
-                                           (list (sixth datum))  ;; equal symbol
-                                           (list (seventh datum)) ;;value
-                                           (list (eighth datum)))) ;; delimiter
+                  (set! ast-result (list  'declaration
+                                          (list 'type (string-append
+                                                       "const PROGMEM "
+                                                       (letType-handler-get-type (fifth datum)))) ;;type
+                                           (correct-id-if-array (third datum) is-array)  ;; id
+                                           (sixth datum) ;; equal symbol
+                                           (seventh datum) ;;value
+                                           (eighth datum))) ;; delimiter
                   (if in-scope-statement '() (add-prog-mem-variable (third datum)))))
       ast-result)))
              

@@ -1,5 +1,5 @@
 # Making MinNo: Lexers, Parsers, and A Whole Mess of Parenthesis
-By Logan davis
+By Logan Davis
 
 ## Abstract:
 [MinNo](http://git.logan-h-g-davis.io/logan/minno) is a compiled language targeting the Arduino platform. 
@@ -14,6 +14,7 @@ language and ecosystem (MinNo's implementation language).
 - [Making MinNo: Lexers, Parsers, and A Whole Mess of Parenthesis](#making-minno-lexers-parsers-and-a-whole-mess-of-parenthesis)
     - [Abstract:](#abstract)
         - [Contents:](#contents)
+    - [Introduction & Overview:](#introduction--overview)
     - [Racket: A LISP for Language Design](#racket-a-lisp-for-language-design)
     - [The Lexer Itself: The Matt Might Method](#the-lexer-itself-the-matt-might-method)
         - [Regular Expressions and Their Use](#regular-expressions-and-their-use)
@@ -43,6 +44,44 @@ language and ecosystem (MinNo's implementation language).
         - [Background resources:](#background-resources)
 
 <!-- /TOC -->
+
+## Introduction & Overview:
+In my junior year at Marlboro College, I wanted to make a synthesizer
+in one of my classes using Arduino development boards. The Arduino 
+is a small, resource limited computer that allows written programs to directly control
+voltages put out by pins. They are cheap, readily available, and run on a 5 volt power
+supply. They seemed to fit the bill for making a custom signal generator for a larger synth.
+
+Sadly, 16mhz, the frequency clock of the Arduino's processor, was slower than I could have 
+anticipated. If I remember, the first version could only produce up to ~200 hertz (AKA 
+lower than the 5th lowest string of a standard guitar on in other words
+"no where near acceptable"). So I began hacking away at the Arduino platform trying to learn
+every trick to get the signal generator to run faster. Look-up tables, magic hex values, and
+hidden registers. Ever shortcut I could think of was hacked into this thing. By the end, 
+I had a signal generator that could put out ~20,000 hertz, but the code was painful to maintain
+by hand. One of the core problems, in my mind, was that most of the hacks I have to make 
+were because the Arduinio's homebrew language was based off of C, an x_86/ARM centric language,
+and the Arduino doesn't just use a different implementation architecture (x_86 vs ARM), it belongs to
+a different architecture family (Harvard vs. Von Neumann). Most of the code I added was accessing 
+some special register or some secret memory pool to x_86 programmers, but these were all
+simple and readily available parts of the Arduino (more accurately AVR) CPU (central processing unit).
+After the synth project, I realized that I didn't want to build on it for my Plan of Concentration.
+I wanted to make a better language to avoid so much hoop-jumping in the future. This is how MinNo began.
+
+MinNo is a language and compiler targeting Arduino-C that is meant to handle some of the 
+more common idiosyncrasies of AVR programming. For more on how MinNo attempts this, please see
+*Why MinNo*.
+
+After toying with a few different language ideas, I had to actually get down to programming the compiler. 
+This starts with making a *lexer*. A lexer classifies words and symbols in a source file and returns *tokens* for them. (it's the part of the compiler that says the symbol *1* is a number unless it's wrapped in string quotes). This classifying of words is in preparation for the *parser* which recognizes series of tokens based on a language grammar.
+At this step to compiler recognizes *for(int i = 0; i < 10 ; i++)...* as a loop but not that it will stop at *i == 9*.
+What the parser produces is an Abstract Syntax Tree (AST), which is a structured representation of some source code
+file as manipulatable data. From an AST, I needed some *translator* to turn my languages AST into one that better
+matches an Arduino-C equivalent AST. These are alterations such as cataloging and what can and cannot be put into 
+the different memory modules on an Arduino board. To actually output it as text file while making a few formatting
+alterations, the translated AST is given to an *unpacker*. This paper will go over the creation of each of these
+parts, the tools that helped to create them, and a thoughts that I know have after getting this far with the
+project.
 
 ## Racket: A LISP for Language Design
 For the lexer, parser, translator, and various tools of MinNo, 
@@ -192,9 +231,29 @@ This rule states a "num" is a integer or a float (as tokenized by our lexer).
 When a grammar file is given to the *brag* compiler, it produces a *parse*
 function. This function will consume a list of tokens and then, using the generated LALR
 parser, it will construct an abstract syntax tree (AST) abiding by the defined
-grammar.
+grammar. For instance, here is a snippet of grammar from the MinNo grammar spec for 
+type signatures of variables and functions:
 
-The grammar produces a syntax object which is handled by the translator.
+     ; Typing statements
+     type: TYPE | ARRAY-TYPE lSqBrac TYPE rSqBrac ;;; "int" | "array[int]"
+     signature: (((id colon type comma)* id colon type) | nonetype) arrow (type | nonetype)
+
+(Keep in mind that anything is all upper case (like **TYPE**) is caught directly from the lexer while 
+things in lower case are other rules in the grammar. )
+
+The rule **type** is applied id a 'TYPE token is passed from the lexer or if an **`ARRAY-TYPE** token is followed
+by a "[" some other 'TYPE and than a "]". This means things like **int**, **float**, and **array[char]** are
+caught by this rule. The choice between these two different forms is denoted by the "|" in the rule, which just 
+means "either the thing to my left or the thing to my right."
+
+The **signature** rules building off of the previous. It is saying that there can be any amount of **id**s followed 
+by a **colon**, a **type**, and then a **comma** (including zero of them), but there must be a single id, followed 
+by a colon and then a type to end the signature. Alternatively all of this can be replaced by a **nonetype**, but one of the two must by there. After this section of the signature (the arguments sections), an **arrow** ("->") has to 
+be next. This arrow can be followed by another **type** or **nonetype**.
+     
+
+
+The grammar produces a syntax-object which is handled by the translator.
 
 ### The State of MinNo's Grammar:
 A few different versions of [MinNo's grammar](http://git.logan-h-g-davis.io/logan/minno/blob/master/src/grammar.rkt) were toyed around with. Originally, 
@@ -202,18 +261,98 @@ MinNo was going to be of a LISP grammar, but between the limitations a LISP inte
 would have and the shoe-horned-ness of compiling it, I decided against 
 the project.[9] Later iterations took notes from F#,
 Scala, Java, Python, and, Pyret. The result of those revisions is what you see currently.
-I feel it is a nice balance between Scala and F#'s (subjectively) clear type notation,
-and Python's clear syntax. By no means does it reach in any of those
+The largest of the influences are from Scala and F#'s type notations:
+
+*F#:*
+
+    let some_int = 5 //variable declaration
+    let foo x y = x * y //function definition
+    foo some_int 5 //function invocation
+
+*Scala:*
+
+    val some_int : Int = 5 //variable declaration
+    def foo(x: Int, y: Int):Int = { // function definition 
+        x * y 
+    }
+    foo(some_int, 6) //function invocation
+
+*MinNo:*
+
+    let some_int: int = 5; //variable declaration
+    def foo x:int, y:int -> int { //function definition 
+        return x * y;
+    }
+    foo some_int 6; //function invocation
+
+By no means does it reach in any of those
 directions as far as the language MinNo takes from (the type system is not even a fraction
 as complicated as Scala's). MinNo just takes some loose form from languages I have used 
 and enjoyed in the past.
 
 ## The Translator: A Handler Model
-Like syntax rules, Racket's syntax objects are highly specific to 
-the crowd that is doing cutting edge language research using the platform. To
-maintain my sanity, I decided to roll my own template-based method instead. Given
+To further ease language creation using Racket, the language has a *syntax-object* data type.
+This is very similar to a quoted expression, but can hold some extra info like lexical bindings and 
+source file location. Here is an example of how to create a quotes expression and a syntax-object:
+
+     ; A quoted expression, note that "`" is shorthand for "quote"
+     > `( + 1 2)
+     '(+ 1 2) 
+
+     ; A syntax-object is also the same notation, but a "#" prepends the "`"
+     > #`(+ 1 2)
+     #<syntax:3:4 (+ 1 2)>
+
+The two are very similar and their difference might not be immediately obvious, but in DrRacket,
+the syntax-object, under inspection, has this meta data attached to it:
+
+     General Info
+     Source
+     '|interactions from an unsaved editor|
+     
+     Source module
+     #f
+     
+     Position
+     100
+     
+     Line
+     3
+     
+     Column
+     4
+     
+     Span
+     7
+     
+     Original?
+     #t
+     
+     Known properties
+     'errortrace:annotate
+     #t
+
+Some of this data is a little funky because it is directly extracted from the Racket interpreter panel. But some things do make sense. The first line you type on is the third line of the interpreter because of the welcome message
+Racket prints out:
+
+     Welcome to DrRacket, version 6.8 [3m].
+     Language: racket, with debugging; memory limit: 256 MB.
+
+And the syntax-object starts on the 4th column preceded by "> " of the prompt and the "#`" the denote typing a
+syntax-object. This meta data what stands out about syntax-object when compared to quotes and quasiquotes in Racket.
+
+Like syntax rules, Racket's syntax-objects are highly specific to 
+the crowd that is doing cutting edge language research using the platform. 
+They have largely been constructed to make use of Racket's *reader* system to
+make interpreted language. I had to make a choice of whether to figure out how to 
+half-use this data type or do something a little more straight forward for my use case.
+To maintain my sanity, I decided to roll my own template-based method instead. Given
 MinNo's rather strict syntax, predicting the grammar that can be used at any 
 point is a programs AST is fairly straight forward. 
+
+The only thing that I lose from the not using syntax-objects is the source file location
+that would allow me to embed translation errors in the translation step. But given that 
+I still have source location in from the lexer, I consider this a non-issue.
 
 ### Avoiding BNF Hell
 A word of warning, this is that area where you start to understand terrible 
@@ -231,6 +370,91 @@ any sub-syntax structure it contains (such as the statements in a block statemen
 a handler directory. The directory used to dispatch sections of the program to their respective
 handlers until the program is fully translated. When is left is a new AST closer to that of an 
 Arduino Language program.
+
+As an example of a handler in action, lets step through the translation of a variable declaration.
+Here is the relevant handler code to understand what is going to happen:
+
+*tree-transform* from *handerDirector.rkt*:
+
+     (define tree-transform
+       (lambda (datum)
+         (define tag (first datum))
+         (cond
+           ;;;----------------TOP LEVEL PROGRAM-----------------------;;;
+           [(equal? tag 'program) (program-tag-handler datum)]
+           ;;;----------------LET STATEMENT---------------------------;;;
+           [(equal? tag 'let-statement) (let-tag-handler datum)]
+           [(equal? tag 'relet-statement) datum]
+           ;;;----------------DEFINE STATEMENT------------------------;;;
+           [(equal? tag 'define-statement)
+            (append (definition-tag-handler datum) (scope-statement-handler (fifth datum)))]
+           ;;;----------------STATEMENT HANDLER-----------------------;;;
+           [(equal? tag 'statment) (statement-handler datum)]
+           [(equal? tag 'delimited-statement) (delimited-statement-handler datum)]
+           [(equal? tag 'scope-statement) (scope-statement-handler datum)]
+           ;;;----------------CONDITIONAL-HANDLER---------------------;;;
+           [(equal? tag 'conditional) (conditional-handler datum)]
+           ;;;----------------RETURN-HANDLER--------------------------;;;
+           [(equal? tag 'return-statement) datum]
+           ;;;----------------LOOP-HANDLER----------------------------;;;
+           [(equal? tag 'while-loop) datum]
+           [(equal? tag 'for-loop) (for-loop-handler datum)])))
+         
+*lettypeHandler.rkt*:
+
+     #lang racket
+     (require "state-roster.rkt")
+     
+    ; Handles a 'let-statement branch of an AST
+     (define let-tag-handler
+       ;;; add section for mutable lets
+       (lambda (datum)
+         (let ([mutable? (mutable-tag? datum)]
+               [ast-result '()])
+              (add-variables-defined (second (third datum))) ;;catalog it as variable
+              (define is-array #f)
+              (if mutable?                          ;; if immutable, catalog it
+                  (and (set! is-array (equal? (second (sixth datum)) "array"))
+                       (set! ast-result (list  'declaration
+                                               (list 'type (letType-handler-get-type (sixth datum))) ;;type
+                                               (correct-id-if-array (third datum) is-array)  ;; id
+                                               (seventh datum)  ;; equal symbol
+                                               (eighth datum);;value
+                                               (ninth datum))))
+                  (and (set! is-array (equal? (second (fifth datum)) "array"))
+                       (set! ast-result (list  'declaration
+                                               (list 'type (string-append
+                                                            "const PROGMEM "
+                                                            (letType-handler-get-type (fifth datum)))) ;;type
+                                                (correct-id-if-array (third datum) is-array)  ;; id
+                                                (sixth datum) ;; equal symbol
+                                                (seventh datum) ;;value
+                                                (eighth datum))) ;; delimiter
+                       (if in-scope-statement '() (add-prog-mem-variable (third datum)))))
+           ast-result)))
+                  
+     ; Appends "[]" to the id tag for C's notation            
+     (define correct-id-if-array
+       (lambda (id-string is-array) 
+         (if is-array
+             (list 'id (string-append (second id-string) "[]"))
+             id-string)))
+     
+     
+     ; Translates types from original-AST to target AST.
+     (define letType-handler-get-type
+       ;;; TODO: add multi-dimensional array type handling.
+       (lambda (datum)
+         (cond [(equal? (second datum) "array") (fourth datum)]
+               [else (second datum)])))
+     
+     
+     ; Verifies that a mutable tag is present in a let-statement
+     (define mutable-tag?
+       (lambda (let-statement)
+         (define result (filter (lambda (x) (equal? (first x) 'mutable-tag))
+                                (rest let-statement)))
+         (if (equal? (length result) 1) #t #f)))
 
 ### Unpacking the Handler
 
@@ -297,12 +521,18 @@ documentation gave a great deal of links on where to read further, it was just
 layers upon layers of conversations that I had no sane introduction to. 
 
 Most of these topics were manageable, but not without staring at docs and opening a 
-REPL again and again. Racket is a small community with hyper-specific language
+an interactive Racket interpreter again and again. Racket is a small community with hyper-specific language
 to talk about what they do. Consequently there aren't very many resources available
 from people other than the ones responsible for the documentation itself. 
 
-Something like ANTLR or YACC/Flex might have been more easily approachable in hind-
-sight just due to the breathe of material for learning them. 
+
+Other languages have lexer and parser tools like BRAG. Java has ANTLR to construct compilers,
+and C/C++ has Lex/Flex to construct lexers and Yacc/Bison to compiler parsers. Both of these 
+could have done what Racket's **lex** and BRAG accomplish in a similar manner. The lexer specification
+would be some series of regular expressions that produce tokens that would be consumed by a parser
+that follows form BNF-like grammar structure. The major benefit that I see in these over Racket is that
+they are far more used and subsequently have a much larger collection of tutorials and educational material
+surrounding them. 
 
 ### Handler are Both Great and Terrible:
 
