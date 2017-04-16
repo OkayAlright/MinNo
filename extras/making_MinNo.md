@@ -372,7 +372,22 @@ handlers until the program is fully translated. When is left is a new AST closer
 Arduino Language program.
 
 As an example of a handler in action, lets step through the translation of a variable declaration.
-Here is the relevant handler code to understand what is going to happen:
+Here is the relevant handler code to understand what is going to happen. Here is an example AST of 
+a variable declaration:
+
+      (let-statement
+        (let "let")
+        (id "ledpin")
+        (colon ":")
+        (type "int")
+        (eq "=")
+        (statement (expr (term (factor (lit (int "-13"))))))
+        (delimit ";"))
+
+So this ast is a *let statement* for an immutable variable referred to by the ID *ledpin* which is an 
+integer of "-13". The first piece of code this AST will be handed to is the 
+handler directory function *tree-transform* which sends off each expression to the correct 
+handler to be translated:
 
 *tree-transform* from *handerDirector.rkt*:
 
@@ -399,6 +414,12 @@ Here is the relevant handler code to understand what is going to happen:
            ;;;----------------LOOP-HANDLER----------------------------;;;
            [(equal? tag 'while-loop) datum]
            [(equal? tag 'for-loop) (for-loop-handler datum)])))
+
+So given than that first element of the example AST is **`let-statement**, the AST is passed of to **let-tag-hander** 
+given the second conditional branch of the **cond** structure from **tree-transform**. So as an overview, before diving
+into the code, this is what needs to happen to the example AST to be ready for the unpacker: the variable need to be cataloged 
+to distinguish it from a function ID when unpacking; if a mutable tag is not present, than "const PROGMEM" needs to be appended in the type-string; and if a variable is an array, the notation need to be translated (from something like "array[int]" to
+"int[]"). Here is the code:
          
 *lettypeHandler.rkt*:
 
@@ -455,6 +476,23 @@ Here is the relevant handler code to understand what is going to happen:
          (define result (filter (lambda (x) (equal? (first x) 'mutable-tag))
                                 (rest let-statement)))
          (if (equal? (length result) 1) #t #f)))
+
+So the code looks a little verbose, but it is rather straight forward once broken down:
+
+ - *mutable-tag?* is just a predicate to see if some let-statement is marked as mutable in the 
+course code. 
+
+ - *letType-handeler-get-type* simply extracts the type from an AST for easier processing.
+
+ - *correct-id-if-array* covers the correction of array brackets in type declarations ("array[int]" -> "int[]").
+
+ The only complicated function is *let-tag-handler* which glues all this stuff together. First, it catalogs the 
+ variable for the unpacker to correctly handle it later in a list from **state-roster.rkt**. Then, if the mutable tag
+ is present, one of two different formatting procedures is used. This has to happen because the present of the mutable
+ tag shifts the index of each element for the AST, restricting options in making a general purpose formatter.
+ While formatting, each element of the array is either directly returns or passes through some minor correction
+ (such as **correct-id-if-array**). After all of this, the translated AST is passed to the **unpacker**.
+
 
 ### Unpacking the Handler
 
