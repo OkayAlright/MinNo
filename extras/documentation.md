@@ -6,8 +6,9 @@
 - [MinNo Documentation:](#minno-documentation)
     - [0.0 Contents:](#00-contents)
     - [1.0 Getting Started](#10-getting-started)
+        - [Install The Compiler and Its Dependencies:](#install-the-compiler-and-its-dependencies)
         - [The Anatomy of A MinNo Script](#the-anatomy-of-a-minno-script)
-        - [A Quick Start](#a-quick-start)
+        - [A Quick Start:](#a-quick-start)
     - [2.0 The Language](#20-the-language)
         - [2.0.1 Types and Literals](#201-types-and-literals)
         - [2.0.2 Operators](#202-operators)
@@ -42,6 +43,7 @@
             - [map](#map)
             - [pow](#pow)
             - [sqrt](#sqrt)
+        - [4.0 Contact Info and Licensing:](#40-contact-info-and-licensing)
 
 <!-- /TOC -->
 
@@ -49,6 +51,30 @@
 
 ## 1.0 Getting Started
 <hr>
+
+### Install The Compiler and Its Dependencies:
+First off, start by grabbing the compilers source code and 
+a distribution of Racket:
+
+  - Racket: https://racket-lang.org/download/
+  - The Compiler: https://github.com/OkayAlright/MinNo
+
+After the compiler is downloaded, you need to install grab
+MinNo's single dependency: *BRAG*. BRAG can either be 
+downloaded via DrRacket's graphical package manager or
+by using the Racket command line packaging tool *raco*:
+
+     $ raco pkg install brag
+
+After that the compiler can be run by the Racket interpreter:
+
+     $ racket <where you download the compiler source>/minno/src/compiler <some minno file> <output path>
+
+Or you can compile it into a standalone executable using DrRacket or *raco*:
+
+     $ raco exe -o <some output name> <where you download the compiler source>//minno/src/compiler.rkt
+
+This will create a system-specific executable that can be run with the typical **./** execution.
 
 ### The Anatomy of A MinNo Script
 Every MinNo file can be broken up into four sections:
@@ -65,7 +91,7 @@ board is reset or powered off. Any functions written other than
 those two will only be called if invoked by some other
 code. 
 
-### A Quick Start
+### A Quick Start:
 "Blink" is the Arduino's "hello world" program. It is a simple sketch
 that turns a pin on, waits, and than turns it off repeatedly. Here is 
 a blink sketch in MinNo:
@@ -537,3 +563,12 @@ Example:
 > * *x*: the integer to computer a square root for.
 
 <hr>
+
+### 4.0 Contact Info and Licensing:
+Feel free to get in touch with me either by email or twitter:
+
+ - email: ldavis@marlboro.edu
+ - twitter: @Death\_by_kelp
+
+ The compiler, examples, associated papers included in the GitHub repo, and this documentation
+ are all freely available under the MIT License. 

@@ -23,7 +23,7 @@ some guide that was provided by education companies like [Sparkfun](https://cdn.
 hexadecimal-encoded hell within a matter of clicks. MinNo is an attempt to create a more humane (for people like 
 myself) entry point to the Arduino platform.
 
-## Harvard vs. Von Neumann
+## CPU Architecture: Harvard vs. Von Neumann
 Most interest in processor architecture lies in standardized implementations (x86 and ARM). The conversation 
 at this level typically is a discussion of instruction sets and bus implementation. AVR processors take it a step further 
 back and discuss the basic organization of a computer. X86 and ARM architectures are organized in a manner originally 
@@ -82,3 +82,92 @@ really need manual heap allocation. MinNo's compiler attempts to generate (subje
 C code. This will allow boiler plate functions and code to be generated, but the resulting code can be opened and 
 optimized/altered to allow for malloc's, free's and a things C-like. It also allows for a bridge from those who have 
 been using MinNo to transition into C in a low-stakes, take-it-at-your-pace manner.
+
+For example, leveraging integer sizes to cut down of code to handle looping over collections is fairly common
+in Arduino programming, but something MinNo doesn't handle very well (yet). An example of this could be  indexing
+through a waveform to be send out via an analog port on an Arduino board:
+
+     int squareWave[256] = {0};
+     byte i = 0; //8-bit integer type in Arduino
+
+     //some code to correctly assign the last 128 indexes of squareWave to 255
+
+     while(0){
+         analogWrite(squareWave[i++]);
+     }
+
+The reason this works is because whenever **i** equals 255 (the last index of **squareWave**), on the next
+increment it overflows back to 0 because it is an 8-bit value. This kind of trick is currently not directly
+possible in MinNo. To get a similar effect, your code would look like this:
+
+
+     let squareWave: array[int] = [0,0,0,0,0 ....Then the other 250 integer values];
+     let i : mutable int = 0;
+     while 0 {
+         analogWrite squareWave[i] ;
+         i = i + 1;
+         if i >= 255 {
+             i = 0;
+         }
+     }
+
+Though this is possibly more readable (less bit-length trickery), it is quite a few more instructions and 
+would take quite a few more cycles to complete. Instead I can compile the above function which would produce
+the C code:
+
+     const PROGMEM int squareWave[] = { 0 , 0 , 0 , 0 , 0... the other 250 values} ;
+	 int i = 0 ;
+	 while(0 ){
+		 analogWrite(pgm_read_word(&squareWave[i])) ;
+		 i = i + 1 ;
+		 if(i >= 255 ){
+			 i = 0 ;
+        }
+     }
+
+Then I can get rid of the wrapping logic and change the type of **i** from **int** to **byte**:
+
+     const PROGMEM int squareWave[] = { 0 , 0 , 0 , 0 , 0... the other 250 values} ;
+	 byte i = 0 ;
+	 while(0 ){
+		 analogWrite(pgm_read_word(&squareWave[i++])) ;
+     }
+
+Restrictions like this are something I know as a shortcoming of the language can I plan to address them in short order.
+But tricks like these inhabit, I would venture to say, ~10% of the code I write. If MinNo allows me to more easily
+complete the other 90% and more mindfully consider when I really need to leverage tricks for performance over writing
+more understandable code, than it has done it's job.
+
+
+## State of The Language:
+
+Currently MinNo is in an *Alpha* state and, though I find it useful for personal work, I would not call it
+production ready by any means. Some more consideration on both the ideas of the language and the construction 
+of the compiler are subject to change. Wider support different bit-length integers; structs; optional
+safer-pointers; and Foreign Function Interfaces (for direct C code) are all being considered on the language side. 
+The compiler needs a semantic verifier in the very near future. This would check arity, make sure no attempted 
+re-assignments to constants occur and so. When you actually upload the compiled MinNo script, GCC does all of this
+for you, but all the messages reference the translated C and not the actual MinNo source file. This is workable for 
+now but by no means is it ideal, and it will become a bigger problem with another goal for the compiler. 
+
+The LLVM community has been doing a lot of work on mainlining AVR support into their codebase. For those who don't know,
+LLVM is a compiler framework that allows for a single target language (the LLVM Intermediate Representation) to be
+optimized and compiled down to machine code for numerous platforms. If LLVM gets AVR support, MinNo will be able to 
+benefit from the vast amount of tool for LLVM compiler and possibly pivot to supporting other platforms with minimal 
+rewriting of core compiler components. This would be a pivot away from GCC which is why a proper semantic verifier is so
+important. 
+
+I don't plan to try to make MinNo more functional-oriented or construct some system to ensure type safety. I want 
+a language to cut down on the code I have to write because the language I have been using makes the incorrect
+assumptions (like C's assumption of a single memory bus). Given that fact, expect the progression of the language
+to reflect as such.
+
+## Getting Involved:
+
+Though I am not taking direct outside contributions to the project right now, I would love feed back on the language.
+MinNo, it's compiler, and the documentation are all under the MIT License, so if you like the idea but want to run
+a different direction with it, please feel free to fork the source code. If you have any questions or just want 
+to talk about the language or anything I have mentioned here, please feel free to contact me:
+
+ - email: ldavis@marlboro.edu 
+ - twitter: @Death\_by_kelp
