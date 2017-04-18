@@ -1,5 +1,6 @@
 # Making MinNo: Lexers, Parsers, and A Whole Mess of Parenthesis
 By Logan Davis
+Last Updated: 4/17/17
 
 ## Abstract:
 [MinNo](http://git.logan-h-g-davis.io/logan/minno) is a compiled language targeting the Arduino platform. 
