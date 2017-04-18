@@ -1,26 +1,26 @@
 # Why MinNo?
 
 I didn't have an easy time learning how to code when I first started. One of the largest reasons I had trouble was 
-because of my first language: [Python](https://www.python.org/).
+because of my first language: [Python](https://www.python.org/).[1]
 
 Though Python has many strengths, I would not say consistency is not among them. This is a pervasive problem from 
 the language's core mechanics (string methods being in place or returning new strings for example) to how any two 
-given people try to teach the same idea (take these two answers to similar questions for example: [1](http://stackoverflow.com/questions/402504/how-to-determine-the-variable-type-in-python) & [2](http://stackoverflow.com/questions/402504/how-to-determine-the-variable-type-in-python)). 
+given people try to teach the same idea (take these two answers to similar questions for example: [1](http://stackoverflow.com/questions/402504/how-to-determine-the-variable-type-in-python) & [2](http://stackoverflow.com/questions/152580/whats-the-canonical-way-to-check-for-type-in-python).[2][3]
 One of Python's strengths is that it allows you to do one specific thing in ten different ways, but I am someone 
 who likes to hear a single thing explained multiple ways. Though I was able to overcome my problems with Python, 
 when I began toying around with the [Arduino platform](https://www.arduino.cc/), I found the same 
-problem with their [home-grown language](https://www.arduino.cc/en/Reference/HomePage).
+problem with their [home-grown language](https://www.arduino.cc/en/Reference/HomePage).[4][5]
 
 The [Arduino language](https://github.com/arduino/Arduino/) (AKA [Processing](http://playground.arduino.cc/Interfacing/Processing), [Wiring](https://blogs.windows.com/buildingapps/2016/09/07/introducing-arduino-wiring-on-windows-10-iot-core/#vYEu3yjHXGsS9ZXE.97), [C/C++](http://forum.arduino.cc/index.php?topic=45492.0)) is a language built on top of C++ but only implements a 
-subset of the C standard library (but none of C++'s library, just using it's syntax and constructs). There are also 
+subset of the C standard library (but none of C++'s library, just using it's syntax and constructs).[6][7][8][9] There are also 
 a fair amount of Arduino/AVR specific functions and global variables sprinkled about. Because of this mash up that is 
 supposed to be a beginner platform and a collection of C functions resembling a K&R era implementation of the language, you 
 get coders running the gamut in style and techniques. [On one end you have some hobbyists making really high level 
 sketches with sophisticated libraries to run wifi-shields for their Arduino Uno project in just a few lines of 
-code](https://www.arduino.cc/en/Guide/ArduinoWiFiShield101). [On the other side you have some old school hackers writing some of the most PreProcessor-Macro'ed, bit 
-twiddling, interrupt throwing files you could imagine](http://rcarduino.blogspot.com/2012/11/quick-and-dirty-synth-for-arduino-due.html). If you aren't brought up to speed on C and Arduino by 
+code](https://www.arduino.cc/en/Guide/ArduinoWiFiShield101).[10] [On the other side you have some old school hackers writing some of the most PreProcessor-Macro'ed, bit 
+twiddling, interrupt throwing files you could imagine](http://rcarduino.blogspot.com/2012/11/quick-and-dirty-synth-for-arduino-due.html).[11] If you aren't brought up to speed on C and Arduino by 
 some guide that was provided by education companies like [Sparkfun](https://cdn.sparkfun.com/datasheets/Kits/SFE03-0012-SIK.Guide-300dpi-01.pdf), you can find yourself in a 
-hexadecimal-encoded hell within a matter of clicks. MinNo is an attempt to create a more humane (for people like 
+hexadecimal-encoded hell within a matter of clicks.[12] MinNo is an attempt to create a more humane (for people like 
 myself) entry point to the Arduino platform.
 
 ## CPU Architecture: Harvard vs. Von Neumann
@@ -28,8 +28,8 @@ Most interest in processor architecture lies in standardized implementations (x8
 at this level typically is a discussion of instruction sets and bus implementation. AVR processors take it a step further 
 back and discuss the basic organization of a computer. X86 and ARM architectures are organized in a manner originally 
 specified by [John Von Neumann](http://www.c-jump.com/CIS77/CPU/VonNeumann/lecture.html): a central processing unit, memory, some form of input, some form of output, and long term 
-storage across a set of shared buses. AVR processors (generally) are organized in a manner consistent with [Harvard specification](http://embeddedknowledge.blogspot.com/2010/02/processor-architectures-harvard-von.html) (more accurately, 
-the modified-Harvard spec). The main difference between Von Neumann and Harvard is that Harvard separates memory into 
+storage across a set of shared buses.[13] AVR processors (generally) are organized in a manner consistent with [Harvard specification](http://embeddedknowledge.blogspot.com/2010/02/processor-architectures-harvard-von.html) (more accurately, 
+the modified-Harvard spec).[14] The main difference between Von Neumann and Harvard is that Harvard separates memory into 
 two different pools: instruction memory and data memory, which attach to the CPU via entirely separate buses. 
 Harvard processors can simultaneously read and write to both memory pools because they do not share a bus. The two pools 
 don't even need to be indexed and architectured the same. Often (as is the case with AVR processors), instruction memory is read/write 
@@ -51,7 +51,7 @@ Harvards design choices in the syntax is a consideration throughout the language
 
 ## Static Memory Allocation
 [Culturally, among novice programers, pointers and manual memory management stand as the mysterious and often frightening 
-figure when writing software](http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers). It is easy to misuse them and hard to figure out why they aren't working (if you aren't 
+figure when writing software](http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers).[15] It is easy to misuse them and hard to figure out why they aren't working (if you aren't 
 practiced in debugging them). Their inclusion in the Arduino language stands as an oddity to me for that reason, other than 
 performance restrictions that prohibit a garbage collection system. Why would a platform bragging about beginner friendliness 
 use one of the most notoriously confusing memory management systems? Given that garbage collection is out of the question 
@@ -63,7 +63,7 @@ memory bugs can be subtle, incredibly hard to reproduce, and absolutely system c
 time programming sketches, I swore off the use of malloc and free in favor of static memory declarations. From 
 synthesizers, to controllers, to IR navigating robots, I have gotten away without using dynamic heap allocations. 
 To anyone reading this, for your sanity, I would suggest a similar shift in coding style. [Others also suggest minimizing dynamic 
-allocation where you can](http://web-engineering.info/node/30). 
+allocation where you can](http://web-engineering.info/node/30).[16]
 
 With purely static allocation, it also allows for far better utilization of the program memory pool. An added bonus in such a 
 memory restricted system. 
@@ -133,8 +133,8 @@ Then I can get rid of the wrapping logic and change the type of **i** from **int
 		 analogWrite(pgm_read_word(&squareWave[i++])) ;
      }
 
-Restrictions like this are something I know as a shortcoming of the language can I plan to address them in short order.
-But tricks like these inhabit, I would venture to say, ~10% of the code I write. If MinNo allows me to more easily
+Restrictions like this are something I know is a shortcoming of the language can I plan to address them in short order.
+But tricks like these, I would venture to say, are only in ~10% of the code I write. If MinNo allows me to more easily
 complete the other 90% and more mindfully consider when I really need to leverage tricks for performance over writing
 more understandable code, than it has done it's job.
 
@@ -171,3 +171,49 @@ to talk about the language or anything I have mentioned here, please feel free t
 
  - email: ldavis@marlboro.edu 
  - twitter: @Death\_by_kelp
+
+
+## Bibliography:
+
+ - \[1]: "Welcome to Python.org." *python.org*. Accessed: April 16th, 2017. https://www.python.org/.
+
+ - \[2]: gregjor. "How to determine a variable's type?." *stackoverflow.com*. Published: December 31st, 2008. http://stackoverflow.com/questions/402504/how-to-determine-the-variable-type-in-python.
+
+ - \[3]: Fredrik Johansson. "What's the canonical way to check for type in python?." *stackoverflow.com*. Published: September 30th, 2008. http://stackoverflow.com/questions/152580/whats-the-canonical-way-to-check-for-type-in-python.
+
+ - \[4]: "Arduino - Home." *arduino.cc*. Accessed: April 16th, 2017. https://www.arduino.cc/.
+
+ - \[5]: "Arduino - Reference." *arduino.cc*. Accessed: April 16th, 2017. https://www.arduino.cc/en/Reference/HomePage.
+
+ - \[6]: "GitHub - arduino/Arduino: open-source electronics prototyping platform." *arduino.cc*. Accessed: April 16th, 2017. https://github.com/arduino/Arduino/.
+
+ - \[7]: "Arduino Playground - Processing." *arduino.cc*. Accessed: April 16th, 2017. http://playground.arduino.cc/Interfacing/Processing.
+
+ - \[8]: Mahmoud Saleh. "Introducing Arduino Wiring on Windows 10 IoT Core." *windows.com*. Published: September 7th, 2016. https://blogs.windows.com/buildingapps/2016/09/07/introducing-arduino-wiring-on-windows-10-iot-core/#vYEu3yjHXGsS9ZXE.97.
+
+ - \[9]: lloyddean. "What is the language you type in the Arduino IDE?." *arduino.cc*. Published: December 8th, 2010. http://forum.arduino.cc/index.php?topic=45492.0.
+
+ - \[10]: "Arduino - ArduinoWiFiShield101 ."  *arduino.cc*. Accessed: April 16th, 2017.  https://www.arduino.cc/en/Guide/ArduinoWiFiShield101.
+
+ - \[11]: Can\_I_Trade?. "Quick And Dirty Synth For Arduino Due." *rcarduino.blogspot.com*. Published: November 30, 2012. http://rcarduino.blogspot.com/2012/11/quick-and-dirty-synth-for-arduino-due.html.
+
+ - \[12]: "Sparkfun Inventor's Kit Guide." *Sparkfun*. Accessed: April 16th, 2017. https://cdn.sparkfun.com/datasheets/Kits/SFE03-0012-SIK.Guide-300dpi-01.pdf.
+
+ - \[13]: Igor Kholodov. "The von Neumann Computer Model." *Bristol Community College*. Accessed: April 16th, 2017. http://www.c-jump.com/CIS77/CPU/VonNeumann/lecture.html.
+
+ - \[14]: Student Fredrick. "Processor architectures: Harvard, von Neumann and Modified Harvard architectures." *embeddedknowledge.blogspot.com*. Published: February 05, 2010. http://embeddedknowledge.blogspot.com/2010/02/processor-architectures-harvard-von.html.
+
+ - \[15]: jkerian. "What do people find difficult about C pointers." *stackoverflow.com*. Published: October 26th, 2010. http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers.
+
+ - \[16]: mdiaconescu. "Optimize Arduino Memory Usage." *web-engineering.info*. Published: July 27th, 2015. http://web-engineering.info/node/30.
+
+
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@
         - [The Anatomy of A MinNo Script](#the-anatomy-of-a-minno-script)
         - [A Quick Start:](#a-quick-start)
     - [2.0 The Language](#20-the-language)
+            - [Brief Overview and Comparison to Arduino-C:](#brief-overview-and-comparison-to-arduino-c)
         - [2.0.1 Types and Literals](#201-types-and-literals)
         - [2.0.2 Operators](#202-operators)
         - [2.1.0 Declaring Values](#210-declaring-values)
@@ -123,7 +124,7 @@ The next line:
 
      let outputPin : int = 13;
 
-It an example of one of the kinds of variable declarations in MinNo. "let" is 
+This is an example of one form of variable declarations in MinNo. "let" is 
 like Javascript's "var" stating that you are about to reference a variable that
 will need to be allocated. "outputPin" is used as the values ID and it's type 
 is stated right after the colon separating it from the ID. This "colon type" marker
@@ -158,6 +159,13 @@ That's it. That's a basic MinNo script.
 ## 2.0 The Language
 <hr>
 This is a more formal and thorough walk through MinNo's builtin keywords and structures.
+
+#### Brief Overview and Comparison to Arduino-C:
+
+For a brief overview of MinNo and a comparison to Arduino-C
+please feel free to consult this poster:
+
+ - https://github.com/OkayAlright/MinNo/blob/master/extras/posterForConference.pdf
 
 ### 2.0.1 Types and Literals
 
@@ -572,3 +580,5 @@ Feel free to get in touch with me either by email or twitter:
 
  The compiler, examples, associated papers included in the GitHub repo, and this documentation
  are all freely available under the MIT License. 
+
+ This document was up-to-date as of 4/17/17
