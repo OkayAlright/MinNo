@@ -76,6 +76,12 @@ Or you can compile it into a standalone executable using DrRacket or *raco*:
      $ raco exe -o <some output name> <where you download the compiler source>//minno/src/compiler.rkt
 
 This will create a system-specific executable that can be run with the typical **./** execution.
+The resulting executable can be run just as the non compiled file without the "racket" prefix:
+
+     $ <where you download the compiler source>/minno/src/compiler <some minno file> <output path>
+
+After running the compiler on a source file, you can either upload it to an Arduino board using 
+their IDE.
 
 ### The Anatomy of A MinNo Script
 Every MinNo file can be broken up into four sections:
@@ -152,7 +158,7 @@ This will cause the Arduino board to stop everything for 1000 milliseconds (1 se
 then continue. So this script turns pin 13 on, waits a second, turns it off, and than waits a 
 second before turning it back on again (and again and again).
 
-That's it. That's a basic MinNo script. 
+Given all of that code, we end up with a basic MinNo script.
 
 <hr>
 
@@ -212,7 +218,7 @@ you want to resolve in the inner most parenthesis and work out from there.
 
 
 ### 2.1.0 Declaring Values
-One of the most fundamental parts of any programming language is how to declare variables.
+One of MinNo's features is in it's variable initialization and assignment. 
 Given that MinNo targets Harvard Architecture processors (which can handle variables in
 memory very differently from x86 and ARM processors), variable declaration is actually one
 of the more nuanced sections of the language. The main difference between declarations in

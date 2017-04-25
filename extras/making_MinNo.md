@@ -3,7 +3,7 @@ By Logan Davis
 Last Updated: 4/17/17
 
 ## Abstract:
-[MinNo](http://git.logan-h-g-davis.io/logan/minno) is a compiled language targeting the Arduino platform. 
+[MinNo](https://github.com/OkayAlright/MinNo) is a compiled language targeting the Arduino platform. 
 This paper, as part of my [Plan of Concentration](https://www.marlboro.edu/academics/undergraduate/plan-of-concentration),
 is an overview of the technologies and techniques used in making 
 MinNo's compiler as well as a collection of opinions of the Racket
@@ -93,7 +93,7 @@ focuses on functional constructions, and Scheme strives towards
 simplicity, Racket has built itself around specificity.[2][3]
 
 Originally, Racket was an education
-centric platform. It's homegrown IDE, ***DR.Racket*** allows for you
+centric platform. It's homegrown IDE, ***DrRacket*** allows for you
 to turn parts of the language on and off to slowly introduce new coders
 to extended functionality in small steps. Ultimately,
 prior to my time using the language, they still wanted to keep it as an educational platform but
@@ -186,7 +186,7 @@ The lexer can also be a place to catch stylistic warnings (such as rustc's warni
 *snake_case*).[6]
 
 ### The State of MinNo's Lexer:
-[MinNo's lexer](http://git.logan-h-g-davis.io/logan/minno/blob/master/src/lexer.rkt) works on an architecture similar to that used by Matt Might
+[MinNo's lexer](https://github.com/OkayAlright/MinNo/blob/master/src/lexer.rkt) works on an architecture similar to that used by Matt Might
 to take advantage of [Racket's input ports](https://docs.racket-lang.org/reference/stringport.html).[7]
 The lexer consumes a file-port's output and gathers it in a buffer. This is recursively done
 until the source file-port is empty. The resulting collection of tokens are passed
@@ -257,7 +257,7 @@ be next. This arrow can be followed by another **type** or **nonetype**.
 The grammar produces a syntax-object which is handled by the translator.
 
 ### The State of MinNo's Grammar:
-A few different versions of [MinNo's grammar](http://git.logan-h-g-davis.io/logan/minno/blob/master/src/grammar.rkt) were toyed around with. Originally, 
+A few different versions of [MinNo's grammar](https://github.com/OkayAlright/MinNo/blob/master/src/grammar.rkt) were toyed around with. Originally, 
 MinNo was going to be of a LISP grammar, but between the limitations a LISP interpreter
 would have and the shoe-horned-ness of compiling it, I decided against 
 the project.[9] Later iterations took notes from F#,
